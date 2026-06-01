@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IA Aftersales — Technical Dashboard 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f0f2f5;--surface:#fff;--surface2:#f7f8fa;--surface3:#eef0f4;
+  --border:#e2e6ed;--border2:#d0d5de;
+  --accent:#0057ff;--accent-light:#e8efff;--accent-dark:#0040cc;
+  --green:#16a34a;--green-light:#dcfce7;
+  --red:#dc2626;--red-light:#fee2e2;
+  --yellow:#d97706;--yellow-light:#fef3c7;
+  --purple:#7c3aed;--purple-light:#ede9fe;
+  --orange:#ea580c;--orange-light:#fff7ed;
+  --text:#0f172a;--text2:#475569;--text3:#94a3b8;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.04);
+  --shadow-md:0 4px 16px rgba(0,0,0,.1),0 1px 4px rgba(0,0,0,.06);
+  --radius:12px;--radius-sm:8px;
+  --font:'Noto Sans Thai','Syne',sans-serif;
+  --font-display:'Syne','Noto Sans Thai',sans-serif;
+}
+.dark{
+  --bg:#090c14;--surface:#111827;--surface2:#161f30;--surface3:#1e2a40;
+  --border:#1e2a40;--border2:#2a3a56;
+  --accent:#4d8bff;--accent-light:#0d1f3c;--accent-dark:#6fa0ff;
+  --green:#22c55e;--green-light:#052e16;
+  --red:#f87171;--red-light:#2d0a0a;
+  --yellow:#fbbf24;--yellow-light:#2d1f00;
+  --purple:#a78bfa;--purple-light:#1e1b4b;
+  --orange:#fb923c;--orange-light:#2d1500;
+  --text:#f1f5f9;--text2:#94a3b8;--text3:#475569;
+  --shadow:0 1px 3px rgba(0,0,0,.4),0 4px 12px rgba(0,0,0,.3);
+  --shadow-md:0 4px 20px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;transition:background .3s,color .3s;min-height:100vh}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* LAYOUT */
+.shell{display:flex;min-height:100vh}
+.sidebar{width:230px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;transition:background .3s;flex-shrink:0}
+.main{flex:1;overflow-x:hidden;display:flex;flex-direction:column}
+
+/* SIDEBAR */
+.brand{padding:22px 20px 18px;border-bottom:1px solid var(--border)}
+.brand-logo{font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--accent);letter-spacing:-1px}
+.brand-tagline{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-top:3px}
+.brand-year{display:inline-block;background:var(--accent-light);color:var(--accent);font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-top:6px}
+.nav-section{padding:10px 0 4px}
+.nav-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:2px;padding:4px 20px 8px;font-weight:600}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;transition:all .15s;border-left:2px solid transparent}
+.nav-item:hover{color:var(--text);background:var(--surface2)}
+.nav-item.active{color:var(--accent);background:var(--accent-light);border-left-color:var(--accent)}
+.nav-icon{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px}
+.sidebar-footer{margin-top:auto;padding:14px 20px;border-top:1px solid var(--border)}
+.mode-toggle{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text2)}
+.toggle-btn{width:38px;height:21px;background:var(--border2);border-radius:11px;position:relative;cursor:pointer;transition:background .2s;border:none;flex-shrink:0}
+.toggle-btn.on{background:var(--accent)}
+.toggle-knob{width:15px;height:15px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle-btn.on .toggle-knob{left:20px}
+.last-update{font-size:10px;color:var(--text3);margin-top:6px}
+
+/* TOPBAR */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;transition:background .3s}
+.page-title{font-family:var(--font-display);font-size:17px;font-weight:700}
+.page-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.filter-pills{display:flex;gap:3px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:3px}
+.pill{padding:5px 13px;border-radius:7px;border:none;background:none;color:var(--text2);font-family:var(--font);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s}
+.pill.active{background:var(--accent);color:#fff}
+.period-chip{padding:6px 13px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text2);font-weight:500}
+.btn-report{display:flex;align-items:center;gap:6px;padding:7px 16px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-report:hover{background:var(--accent-dark);transform:translateY(-1px)}
+.btn-pdf{display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--red);color:#fff;border:none;border-radius:8px;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-pdf:hover{background:#b91c1c}
+
+/* CONTENT */
+.content{padding:22px 28px;flex:1}
+.tab-panel{display:none}.tab-panel.active{display:block}
+
+/* SECTION */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.sec-title{font-family:var(--font-display);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text3)}
+.sec-action{font-size:11px;color:var(--accent);cursor:pointer;font-weight:600}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.kpi-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius) var(--radius) 0 0}
+.kpi-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:6px}
+.kpi-val{font-family:var(--font-display);font-size:28px;font-weight:800;line-height:1}
+.kpi-val .unit{font-size:14px;font-weight:400;color:var(--text2)}
+.kpi-meta{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.kpi-sub{font-size:10px;color:var(--text3)}
+.badge{display:inline-flex;align-items:center;gap:2px;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:700}
+.badge.pass{background:var(--green-light);color:var(--green)}
+.badge.fail{background:var(--red-light);color:var(--red)}
+.badge.warn{background:var(--yellow-light);color:var(--yellow)}
+.badge.info{background:var(--accent-light);color:var(--accent)}
+.badge.purple{background:var(--purple-light);color:var(--purple)}
+.badge.orange{background:var(--orange-light);color:var(--orange)}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px}
+.g21{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:18px}
+@media(max-width:1000px){.g2,.g3,.g21{grid-template-columns:1fr}}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:background .3s}
+.card-hdr{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:13px;font-weight:600}
+.card-sub{font-size:10px;color:var(--text3)}
+.card-body{padding:14px 16px}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{padding:8px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--surface2)}
+.rank{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:10px;font-weight:700;background:var(--surface2);color:var(--text2)}
+.rank.r1{background:#fef3c7;color:#b45309}
+.rank.r2{background:#f1f5f9;color:#64748b}
+.rank.r3{background:#fdf2e9;color:#9a6522}
+
+/* BAR */
+.mini-bar{display:flex;align-items:center;gap:8px}
+.bar-track{flex:1;height:6px;background:var(--surface3);border-radius:3px;overflow:hidden;min-width:50px}
+.bar-fill{height:100%;border-radius:3px;transition:width .8s}
+.bar-val{font-size:11px;font-weight:600;min-width:34px;text-align:right}
+.hbar-chart{display:flex;flex-direction:column;gap:9px;padding:14px 16px}
+.hbar-row{display:flex;align-items:center;gap:9px}
+.hbar-label{width:170px;font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0}
+.hbar-track{flex:1;height:20px;background:var(--surface2);border-radius:5px;overflow:hidden}
+.hbar-fill{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:7px;font-size:10px;font-weight:600;color:rgba(255,255,255,.9);transition:width .8s}
+.hbar-num{width:38px;font-size:11px;font-weight:700;text-align:right;flex-shrink:0}
+
+/* UPLOAD */
+.upload-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+.upload-slot{background:var(--surface);border:1.5px dashed var(--border2);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all .2s;position:relative;text-align:center}
+.upload-slot:hover{border-color:var(--accent);background:var(--accent-light)}
+.upload-slot.loaded{border-style:solid;border-color:var(--green);background:var(--green-light)}
+.upload-slot input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon{font-size:26px;margin-bottom:6px}
+.upload-name{font-size:13px;font-weight:600}
+.upload-hint{font-size:10px;color:var(--text3);margin-top:4px;line-height:1.5}
+.upload-status{font-size:11px;margin-top:6px;font-weight:500}
+.info-box{background:var(--accent-light);border:1px solid var(--accent);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--accent);margin-bottom:14px;line-height:1.6}
+.warn-box{background:var(--yellow-light);border:1px solid var(--yellow);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--yellow);margin-bottom:14px}
+
+/* SETTINGS */
+.settings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.scard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
+.scard-title{font-size:13px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.sfield{margin-bottom:12px}
+.sfield label{display:block;font-size:11px;color:var(--text2);font-weight:500;margin-bottom:4px}
+.sinput{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:7px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;transition:border .15s}
+.sinput:focus{border-color:var(--accent)}
+.sbtn{background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:9px 18px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+.sbtn:hover{background:var(--accent-dark)}
+
+/* EMPTY */
+.empty{padding:48px;text-align:center;color:var(--text3);font-size:13px}
+.empty-icon{font-size:38px;margin-bottom:10px}
+
+/* OVERVIEW KPIs */
+.ov-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:900px){.ov-kpis{grid-template-columns:repeat(2,1fr)}}
+.ov-kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.ov-kpi:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.ov-kpi-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.ov-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.ov-val{font-family:var(--font-display);font-size:32px;font-weight:800;line-height:1}
+.ov-unit{font-size:14px;font-weight:400;color:var(--text2)}
+.ov-label{font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
+.ov-footer{margin-top:10px;padding-top:8px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ov-sub{font-size:10px;color:var(--text3)}
+.arrow-link{font-size:10px;color:var(--accent);font-weight:600;cursor:pointer}
+
+/* DOS CATEGORY TABS */
+.cat-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.cat-tab{padding:7px 16px;border-radius:20px;border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.cat-tab:hover{border-color:var(--accent);color:var(--accent)}
+.cat-tab.active{border-color:transparent;color:#fff}
+.cat-tab.tech.active{background:var(--accent)}
+.cat-tab.parts.active{background:var(--orange)}
+.cat-tab.ops.active{background:var(--purple)}
+.cat-tab.all.active{background:var(--text2)}
+.cat-count{display:inline-block;background:rgba(255,255,255,.25);border-radius:10px;font-size:9px;padding:1px 5px;margin-left:4px}
+
+/* DOS item rows */
+.dos-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);transition:background .1s}
+.dos-item:hover{background:var(--surface2)}
+.dos-item:last-child{border-bottom:none}
+.dos-no{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:#fff}
+.dos-cat-icon{font-size:13px;flex-shrink:0;margin-top:2px}
+.dos-text{flex:1;font-size:12px;line-height:1.5;color:var(--text2)}
+.dos-score{font-size:11px;font-weight:700;white-space:nowrap}
+.dos-result{flex-shrink:0}
+
+/* PRINT / REPORT */
+.report-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;overflow-y:auto;padding:20px}
+.report-overlay.open{display:block}
+.report-box{background:var(--surface);border-radius:16px;max-width:900px;margin:0 auto;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.report-hdr{background:var(--accent);padding:24px 32px;display:flex;align-items:center;justify-content:space-between}
+.report-title{font-family:var(--font-display);font-size:20px;font-weight:800;color:#fff}
+.report-close{background:rgba(255,255,255,.2);border:none;color:#fff;font-size:18px;cursor:pointer;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.report-body{padding:28px 32px}
+.report-section{margin-bottom:24px}
+.report-section-title{font-family:var(--font-display);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:12px}
+.report-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.r-kpi{background:var(--surface2);border-radius:8px;padding:12px;text-align:center}
+.r-kpi-val{font-family:var(--font-display);font-size:24px;font-weight:800}
+.r-kpi-label{font-size:10px;color:var(--text2);margin-top:3px}
+.report-footer{display:flex;gap:10px;justify-content:flex-end;padding:16px 32px;border-top:1px solid var(--border)}
+.btn-print{display:flex;align-items:center;gap:6px;padding:10px 20px;background:var(--red);color:#fff;border:none;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer}
+.btn-close-r{padding:10px 20px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:8px;font-family:var(--font);font-size:13px;cursor:pointer}
+
+/* GAUGE */
+.gauge-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:18px}
+.gauge-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;text-align:center}
+.gauge-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);margin-bottom:12px}
+.gauge-big{font-family:var(--font-display);font-size:42px;font-weight:800;line-height:1}
+.gauge-desc{font-size:11px;color:var(--text2);margin-top:6px;line-height:1.6}
+.improve-row{font-size:11px;margin-top:8px;padding:6px 10px;background:var(--yellow-light);border-radius:6px;color:var(--yellow);font-weight:500}
+
+@media print {
+  .sidebar,.topbar,.report-overlay,.topbar-right { display:none!important }
+  .shell { display:block }
+  .main { display:block }
+  .tab-panel { display:block!important }
+  .content { padding:0 }
+  body { background:#fff }
+}
+</style>
+</head>
+<body class="dark" id="body">
+
+<!-- REPORT OVERLAY -->
+<div class="report-overlay" id="report-overlay">
+  <div class="report-box">
+    <div class="report-hdr">
+      <div>
+        <div class="report-title">📊 IA Aftersales Monthly Report</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.7);margin-top:3px" id="rpt-period">—</div>
+      </div>
+      <button class="report-close" onclick="closeReport()">✕</button>
+    </div>
+    <div class="report-body" id="rpt-body">
+      <div class="empty">กรุณา Import ข้อมูลก่อน Generate Report</div>
+    </div>
+    <div class="report-footer">
+      <button class="btn-close-r" onclick="closeReport()">ปิด</button>
+      <button class="btn-print" onclick="printReport()">🖨️ Print / Save PDF</button>
+    </div>
+  </div>
+</div>
+
+<div class="shell">
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="brand">
+    <div class="brand-logo">IA Group</div>
+    <div class="brand-tagline">Aftersales Technical Dashboard</div>
+    <div class="brand-year">2026</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Main</div>
+    <div class="nav-item active" id="nav-overview" onclick="go('overview',this)"><span class="nav-icon">⬡</span> Overview</div>
+    <div class="nav-item" id="nav-dos" onclick="go('dos',this)"><span class="nav-icon">◻</span> DOS</div>
+    <div class="nav-item" id="nav-csi" onclick="go('csi',this)"><span class="nav-icon">★</span> CSI / NPS</div>
+    <div class="nav-item" id="nav-training" onclick="go('training',this)"><span class="nav-icon">◈</span> Training</div>
+    <div class="nav-item" id="nav-ats" onclick="go('ats',this)"><span class="nav-icon">◎</span> ATS</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">DOS Sub-Views</div>
+    <div class="nav-item" id="nav-dos-tech" onclick="go('dos',this);switchDosTab('tech')"><span class="nav-icon">🔧</span> Technical</div>
+    <div class="nav-item" id="nav-dos-parts" onclick="go('dos',this);switchDosTab('parts')"><span class="nav-icon">📦</span> Spare Parts</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Config</div>
+    <div class="nav-item" id="nav-import" onclick="go('import',this)"><span class="nav-icon">↑</span> Import Data</div>
+    <div class="nav-item" id="nav-settings" onclick="go('settings',this)"><span class="nav-icon">⊙</span> Settings</div>
+  </div>
+  <div class="sidebar-footer">
+    <div class="mode-toggle">
+      <span>Night Mode</span>
+      <button class="toggle-btn on" id="mode-btn" onclick="toggleMode()"><div class="toggle-knob"></div></button>
+    </div>
+    <div class="last-update" id="last-update">ยังไม่ได้โหลดข้อมูล</div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="page-title" id="ptitle">Master Dashboard</div>
+      <div class="page-sub" id="psub">IA Aftersales — Infinite Automobile Group</div>
+    </div>
+    <div class="topbar-right">
+      <div class="filter-pills">
+        <button class="pill active" onclick="setFilter('monthly',this)">Monthly</button>
+        <button class="pill" onclick="setFilter('quarterly',this)">Quarterly</button>
+        <button class="pill" onclick="setFilter('yearly',this)">Yearly</button>
+      </div>
+      <div class="period-chip" id="pchip">— No Data —</div>
+      <button class="btn-report" onclick="generateReport()">📋 Generate Report</button>
+      <button class="btn-pdf" onclick="printDirect()">🖨️ PDF</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- OVERVIEW -->
+    <div class="tab-panel active" id="tab-overview">
+      <div id="ov-content"><div class="empty"><div class="empty-icon">⬡</div>โหลด Demo หรือ Import ไฟล์เพื่อเริ่ม</div></div>
+    </div>
+
+    <!-- DOS -->
+    <div class="tab-panel" id="tab-dos">
+      <div id="dos-content"><div class="empty"><div class="empty-icon">◻</div>กรุณา Upload ไฟล์ DOS Visit Log</div></div>
+    </div>
+
+    <!-- CSI -->
+    <div class="tab-panel" id="tab-csi">
+      <div id="csi-content"><div class="empty"><div class="empty-icon">★</div>กรุณา Import ไฟล์ CSI</div></div>
+    </div>
+
+    <!-- TRAINING -->
+    <div class="tab-panel" id="tab-training">
+      <div id="tr-content"><div class="empty"><div class="empty-icon">◈</div>กรุณา Import ไฟล์ Training</div></div>
+    </div>
+
+    <!-- ATS -->
+    <div class="tab-panel" id="tab-ats">
+      <div id="ats-content"><div class="empty"><div class="empty-icon">◎</div>กรุณา Import ไฟล์ ATS</div></div>
+    </div>
+
+    <!-- IMPORT -->
+    <div class="tab-panel" id="tab-import">
+      <div class="info-box">📌 <strong>วิธีใช้:</strong>
+        DOS = Upload ไฟล์ <strong>IA_DOS_Visit_Tool_v1.xlsx</strong> (Visit Log tab) |
+        CSI = โยนทีละเดือน (ระบบสะสม trend อัตโนมัติ) |
+        Training = โยนทับไฟล์ใหม่ได้เลย |
+        ATS = โยนทีละเดือน
+      </div>
+      <div class="upload-grid">
+        <div class="upload-slot" id="slot-dos">
+          <input type="file" accept=".xlsx,.xls,.csv" onchange="handleFile(event,'dos')">
+          <div class="upload-icon">◻</div>
+          <div class="upload-name">DOS Visit Log</div>
+          <div class="upload-hint">IA_DOS_Visit_Tool_v1.xlsx<br>จาก DOS Checklist ที่กรอกแล้ว</div>
+          <div class="upload-status" id="st-dos" style="color:var(--text3)">⬜ ยังไม่ได้โหลด</div>
+        </div>
+        <div class="upload-slot" id="slot-csi">
+          <input type="file" accept=".xlsx,.xls,.csv" onchange="handleFile(event,'csi')">
+          <div class="upload-icon">★</div>
+          <div class="upload-name">CSI Score</div>
+          <div class="upload-hint">CSI_Monthly_MMMYYYY.xlsx<br>จาก Call Center — โยนทีละเดือน</div>
+          <div class="upload-status" id="st-csi" style="color:var(--text3)">⬜ ยังไม่ได้โหลด</div>
+        </div>
+        <div class="upload-slot" id="slot-training">
+          <input type="file" accept=".xlsx,.xls,.csv" onchange="handleFile(event,'training')">
+          <div class="upload-icon">◈</div>
+          <div class="upload-name">Training Summary</div>
+          <div class="upload-hint">Training_Summary_...xlsx<br>จาก Changan — โยนทับได้</div>
+          <div class="upload-status" id="st-training" style="color:var(--text3)">⬜ ยังไม่ได้โหลด</div>
+        </div>
+        <div class="upload-slot" id="slot-ats">
+          <input type="file" accept=".xlsx,.xls,.csv" onchange="handleFile(event,'ats')">
+          <div class="upload-icon">◎</div>
+          <div class="upload-name">ATS Tickets</div>
+          <div class="upload-hint">ATS_YYYYMMDD.xlsx<br>Download จากระบบ</div>
+          <div class="upload-status" id="st-ats" style="color:var(--text3)">⬜ ยังไม่ได้โหลด</div>
+        </div>
+      </div>
+      <button class="sbtn" onclick="loadDemo()">🚀 โหลด Demo Data</button>
+      <span style="font-size:11px;color:var(--text3);margin-left:10px">ใช้ข้อมูลจากไฟล์จริง April–May 2026</span>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="tab-panel" id="tab-settings">
+      <div class="settings-grid">
+        <div class="scard">
+          <div class="scard-title">★ CSI Criteria</div>
+          <div class="sfield"><label>Overall Pass (%)</label><input class="sinput" id="c-csi-ov" type="number" value="75"></div>
+          <div class="sfield"><label>Q2 Professionalism Target (%)</label><input class="sinput" id="c-csi-q2" type="number" value="75"></div>
+          <div class="sfield"><label>Q4 Repair Quality Target (%)</label><input class="sinput" id="c-csi-q4" type="number" value="75"></div>
+          <div class="sfield"><label>Warning Zone (% ต่ำกว่า target)</label><input class="sinput" id="c-csi-warn" type="number" value="10"></div>
+        </div>
+        <div class="scard">
+          <div class="scard-title">◈ Training Criteria</div>
+          <div class="sfield"><label>Min Certified per Dealer (คน)</label><input class="sinput" id="c-tr-min" type="number" value="3"></div>
+          <div class="sfield"><label>L1 Certify Target (%)</label><input class="sinput" id="c-tr-l1" type="number" value="80"></div>
+          <div class="sfield"><label>L2 Certify Target (%)</label><input class="sinput" id="c-tr-l2" type="number" value="60"></div>
+        </div>
+        <div class="scard">
+          <div class="scard-title">◻ DOS Criteria</div>
+          <div class="sfield"><label>Pass Threshold (%)</label><input class="sinput" id="c-dos-pass" type="number" value="70"></div>
+          <div class="sfield"><label>Warning Zone (% ต่ำกว่า pass)</label><input class="sinput" id="c-dos-warn" type="number" value="10"></div>
+          <div class="sfield"><label>Technical Section Target (%)</label><input class="sinput" id="c-dos-tech" type="number" value="70"></div>
+          <div class="sfield"><label>Parts Section Target (%)</label><input class="sinput" id="c-dos-parts" type="number" value="70"></div>
+        </div>
+        <div class="scard">
+          <div class="scard-title">◎ ATS Criteria</div>
+          <div class="sfield"><label>Repeat Rate ≤ (%) — OK</label><input class="sinput" id="c-ats-rep" type="number" value="10"></div>
+          <div class="sfield"><label>Open Rate ≤ (%) — OK</label><input class="sinput" id="c-ats-open" type="number" value="30"></div>
+          <div class="sfield"><label>Max Tickets / Dealer / Month</label><input class="sinput" id="c-ats-max" type="number" value="10"></div>
+        </div>
+      </div>
+      <button class="sbtn" onclick="saveSettings()" style="margin-top:14px">💾 Save & Apply</button>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+// ════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════
+const S = {
+  mode:'dark', filter:'monthly',
+  cfg:{ csi_ov:75,csi_q2:75,csi_q4:75,csi_warn:10, tr_min:3,tr_l1:80,tr_l2:60,
+        dos_pass:70,dos_warn:10,dos_tech:70,dos_parts:70,
+        ats_rep:10,ats_open:30,ats_max:10 },
+  csi:{}, training:null, ats:{},
+  dos:[]   // array of visit records (from Visit Log)
+};
+
+// DOS item catalog — maps item no → category + subcategory
+const DOS_ITEMS = {
+  // ── TECHNICAL (🔧) ─────────────────────────────────────────
+  14:{cat:'tech',sub:'Technician Uniform',text:'ช่างแต่งเครื่องแบบถูกต้อง สวมรองเท้า Safety เท่านั้น',score:5},
+  15:{cat:'tech',sub:'HV Safety Equipment',text:'ช่างมีอุปกรณ์ Safety HV: ถุงมือกันไฟฟ้า/แว่นนิรภัย/ป้ายแจ้งเตือน',score:5},
+  22:{cat:'tech',sub:'Technician L1 Cert',text:'Technician ผ่าน L1 Certification',score:10},
+  23:{cat:'tech',sub:'Technician L2 Cert',text:'Technician ผ่าน L2 Certification',score:10},
+  24:{cat:'tech',sub:'Training Attendance',text:'เข้าอบรมตรงตามที่ลงทะเบียน แจ้งล่วงหน้าถ้าไม่ได้ไป',score:10},
+  25:{cat:'tech',sub:'New Model Training',text:'Technician ลงทะเบียน+เข้าอบรมรถโมเดลใหม่และสอบผ่าน',score:10},
+  26:{cat:'tech',sub:'New Model Training',text:'Non-Technician ลงทะเบียน+เข้าอบรมรถโมเดลใหม่และสอบผ่าน',score:10},
+  53:{cat:'tech',sub:'Workshop Parking',text:'พื้นที่จอดรถในศูนย์ตรงมาตรฐาน มีป้ายแบ่งพื้นที่ชัดเจน',score:5},
+  54:{cat:'tech',sub:'Workshop Marking',text:'ตีเส้นสีขาว ป้ายระบุประเภทพื้นที่ ชัดเจนตลอดเวลา',score:5},
+  55:{cat:'tech',sub:'Tool Station',text:'อุปกรณ์มีกรอบ/เส้นระบุตำแหน่ง สะดวก ครบถ้วน',score:5},
+  56:{cat:'tech',sub:'Tool Trolley',text:'รถเข็นเครื่องมือจัดเก็บเป็นระเบียบ ล็อคล้อได้',score:5},
+  57:{cat:'tech',sub:'Tool Maintenance',text:'เครื่องมือมีเครื่องหมายตำแหน่ง มีบันทึกการบำรุงรักษา',score:5},
+  58:{cat:'tech',sub:'Battery Storage',text:'มีพื้นที่เก็บแบตเสื่อมสภาพ ระบายอากาศ แห้ง -5 ถึง +28°C',score:5},
+  59:{cat:'tech',sub:'Parts on Shelf',text:'ชิ้นส่วนที่ถอดวางบนชั้น ไม่วางบนพื้น จัดอย่างเป็นระเบียบ',score:5},
+  60:{cat:'tech',sub:'Lift Inspection',text:'มีการตรวจสอบลิฟท์และเครื่องมือสม่ำเสมอ',score:5},
+  61:{cat:'tech',sub:'Waste Separation',text:'มีถังขยะ 3 ประเภท (เขียว/เหลือง/แดง) ไม่ล้นถัง มีตำแหน่งชัดเจน',score:5},
+  62:{cat:'tech',sub:'5S Workshop',text:'มีมาตรฐาน 5S พร้อม Checklist รูปภาพอ้างอิง ผู้รับผิดชอบ',score:5},
+  63:{cat:'tech',sub:'Fire Extinguisher',text:'มีถังดับเพลิง ≥4 จุด พร้อมใช้ ไม่หมดอายุ',score:5},
+  81:{cat:'tech',sub:'Car Wash Record',text:'SA บันทึกความต้องการล้างรถใน RO และ DMS',score:5},
+  82:{cat:'tech',sub:'Car Protection Cover',text:'รถทุกคันที่เข้าซ่อมมีผ้าคลุมเบาะ/พวงมาลัย/แก้ม ตั้งแต่รับถึงส่งมอบ',score:10},
+  83:{cat:'tech',sub:'Additional Repair Record',text:'มีการบันทึกรายการแจ้งซ่อมเพิ่มใน RO',score:5},
+  84:{cat:'tech',sub:'Progress Update',text:'SA อัพเดทความคืบหน้าลูกค้าทุก ≤1 ชั่วโมง',score:5},
+  85:{cat:'tech',sub:'Parts Requisition',text:'มีใบเบิกอะไหล่คู่กับสำเนา RO หัวหน้าช่าง/ช่างเซ็นรับ',score:5},
+  86:{cat:'tech',sub:'QC Check',text:'หัวหน้าช่างตรวจว่าปัญหาที่ลูกค้าแจ้งได้รับการแก้ไขถูกต้อง',score:10},
+  87:{cat:'tech',sub:'QC Signature',text:'หัวหน้าช่างเซ็นในเอกสาร QC Check Sheet',score:5},
+  93:{cat:'tech',sub:'Pending RO',text:'จำนวน RO ค้างใน DMS ตรงกับรถค้างจริงในศูนย์',score:20},
+
+  // ── SPARE PARTS (📦) ────────────────────────────────────────
+  64:{cat:'parts',sub:'Car Wash Equipment',text:'มีอุปกรณ์ล้างรถครบ 7 รายการ (เครื่องฉีดน้ำ/ฟองน้ำ/น้ำยา/ผ้าไมโครไฟเบอร์/แปรงล้อ/น้ำยายาง/เครื่องดูดฝุ่น)',score:15},
+  65:{cat:'parts',sub:'Car Wash Area',text:'มีป้ายระบุพื้นที่ล้างรถ อุปกรณ์เก็บในตู้/ชั้นวาง',score:5},
+  89:{cat:'parts',sub:'Old Parts Display',text:'SA เตรียมอะไหล่เก่าแสดงลูกค้า ณ จุดส่งมอบ',score:5},
+  95:{cat:'parts',sub:'RO Customer Signature',text:'ใบ RO ทุกใบมีลายเซ็นลูกค้า (ทั้งงานชำระเงิน/ประกัน/ภายใน)',score:10},
+  96:{cat:'parts',sub:'Warranty Parts Room Lock',text:'ห้องเก็บอะไหล่เคลมสามารถล็อคได้',score:5},
+  97:{cat:'parts',sub:'Warranty Parts Storage',text:'อะไหล่เคลมอยู่บนชั้นวาง/ในห้อง ไม่มีสิ่งไม่เกี่ยวข้อง',score:10},
+  98:{cat:'parts',sub:'Warranty Parts Label',text:'ติดป้าย Warranty บนอะไหล่เคลม ข้อมูลครบถ้วน',score:10},
+  99:{cat:'parts',sub:'Room Responsible Sign',text:'มีป้ายกำกับผู้รับผิดชอบห้องเคลมชัดเจน',score:5},
+  100:{cat:'parts',sub:'Parts Receiving Area',text:'มีพื้นที่รับ/เบิกอะไหล่ เพียงพอ มีตีเส้น+ป้ายชัดเจน',score:5},
+  101:{cat:'parts',sub:'Parts Room Map',text:'มีแผนที่แสดงสถานที่จัดเก็บ ติดที่ผนังทางเข้า',score:5},
+  102:{cat:'parts',sub:'Location Labels',text:'ชั้นวางแต่ละชั้นมีป้าย Location กำกับชัดเจน',score:5},
+  103:{cat:'parts',sub:'5S Parts Room',text:'ห้องอะไหล่ปฏิบัติตาม 5S สม่ำเสมอ ไม่มีอะไหล่บนพื้น',score:5},
+  104:{cat:'parts',sub:'Pre-pick Shelf',text:'มีชั้นวาง Pre-pick สำหรับลูกค้านัดหมายพรุ่งนี้ ติดป้ายชื่อ/ทะเบียน',score:10},
+  105:{cat:'parts',sub:'No Foreign Objects',text:'ไม่มีเครื่องมือ/อะไหล่เคลมปะปนในห้องอะไหล่',score:5},
+  106:{cat:'parts',sub:'Pallet for Large Parts',text:'อะไหล่ขนาดใหญ่วางบน Pallet ไม่วางพื้นโดยตรง',score:10},
+  107:{cat:'parts',sub:'EPC Computer',text:'มีคอมพิวเตอร์+เครื่องพิมพ์ สามารถใช้ EPC ได้',score:5},
+  108:{cat:'parts',sub:'Parts Counter',text:'มีเคาน์เตอร์/ช่องจ่ายอะไหล่สำหรับช่าง',score:5},
+};
+
+// items not in DOS_ITEMS = Operations/General
+const TECH_ITEMS = Object.keys(DOS_ITEMS).filter(k=>DOS_ITEMS[k].cat==='tech').map(Number);
+const PARTS_ITEMS = Object.keys(DOS_ITEMS).filter(k=>DOS_ITEMS[k].cat==='parts').map(Number);
+const TECH_MAX = TECH_ITEMS.reduce((s,k)=>s+DOS_ITEMS[k].score,0);   // ~195
+const PARTS_MAX = PARTS_ITEMS.reduce((s,k)=>s+DOS_ITEMS[k].score,0); // ~130
+
+// ════════════════════════════════════════
+// MODE / NAV
+// ════════════════════════════════════════
+function toggleMode(){
+  S.mode = S.mode==='dark'?'light':'dark';
+  const b=document.getElementById('body'),btn=document.getElementById('mode-btn');
+  if(S.mode==='light'){b.classList.remove('dark');btn.classList.remove('on');}
+  else{b.classList.add('dark');btn.classList.add('on');}
+}
+
+const TITLES = {
+  overview:['Master Dashboard','Command Center — IA Infinite Automobile Group'],
+  dos:['DOS','Dealer Operation Standard — Visit Log Analysis'],
+  csi:['CSI / NPS','Customer Satisfaction & Net Promoter Score'],
+  training:['Training','Technician Certification & Product Knowledge'],
+  ats:['ATS','Technical Support Tickets'],
+  import:['Import Data','โหลดไฟล์เพื่ออัปเดต Dashboard'],
+  settings:['Settings','ตั้งค่า Pass/Fail Criteria']
+};
+
+function go(id,el){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(el)el.classList.add('active');
+  const[t,s]=TITLES[id]||[id,''];
+  document.getElementById('ptitle').textContent=t;
+  document.getElementById('psub').textContent=s;
+}
+function goTo(id){go(id,document.getElementById('nav-'+id));}
+function setFilter(f,btn){
+  S.filter=f;
+  document.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll();
+}
+
+// ════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════
+function pct(v,d=1){return v==null?'—':v.toFixed(d)+'%';}
+function statusBadge(val,tgt,warn=10){
+  if(val==null)return '<span class="badge warn">N/A</span>';
+  if(val>=tgt)return '<span class="badge pass">✓ Pass</span>';
+  if(val>=tgt-warn)return '<span class="badge warn">⚠ Warn</span>';
+  return '<span class="badge fail">✗ Fail</span>';
+}
+function barColor(val,tgt){
+  if(val==null)return'#94a3b8';
+  if(val>=tgt)return'var(--green)';
+  if(val>=tgt*.85)return'var(--yellow)';
+  return'var(--red)';
+}
+function miniBar(val,tgt,max=100){
+  const w=Math.min((val||0)/max*100,100);
+  const c=barColor(val,tgt);
+  return`<div class="mini-bar"><div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${c}"></div></div><span class="bar-val" style="color:${c}">${val!=null?val.toFixed(1)+'%':'—'}</span></div>`;
+}
+function rankBadge(i){
+  const cls=i===0?'r1':i===1?'r2':i===2?'r3':'';
+  return`<span class="rank ${cls}">${i+1}</span>`;
+}
+
+// ════════════════════════════════════════
+// FILE HANDLING
+// ════════════════════════════════════════
+function handleFile(e,type){
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const wb=XLSX.read(ev.target.result,{type:'binary',cellDates:true});
+      if(type==='dos')parseDos(wb,file.name);
+      else if(type==='csi')parseCsi(wb,file.name);
+      else if(type==='training')parseTraining(wb,file.name);
+      else if(type==='ats')parseAts(wb,file.name);
+      markSlot(type,file.name);
+      renderAll();
+      document.getElementById('last-update').textContent='🟢 '+new Date().toLocaleTimeString('th-TH');
+    }catch(err){alert('Error reading '+type+': '+err.message);console.error(err);}
+  };
+  r.readAsBinaryString(file);
+}
+function markSlot(type,fname){
+  const slot=document.getElementById('slot-'+type);
+  const st=document.getElementById('st-'+type);
+  if(slot)slot.classList.add('loaded');
+  if(st)st.innerHTML=`<span style="color:var(--green)">✅ ${fname.slice(0,26)}</span>`;
+}
+
+// ════════════════════════════════════════
+// PARSE DOS — reads Visit Log from IA_DOS_Visit_Tool_v1.xlsx
+// Columns: A=Log ID, B=Visit Date, C=Dealer Name, D=Dealer Code,
+//          E=Region, F=Brand, G=Visit Type, H=Auditor,
+//          I=P1 Score, J=P1 Max, K=P1%, L=P2 Score, M=P2 Max, N=P2%,
+//          O=P3 Score, P=P3 Max, Q=P3%, R=P4 Score, S=P4 Max, T=P4%,
+//          U=Total Score, V=Total Max, W=Overall%, X=Status, Y=Notes
+// ════════════════════════════════════════
+function parseDos(wb,fname){
+  const ws=wb.Sheets['Visit Log']||wb.Sheets[wb.SheetNames.find(s=>s.includes('Visit'))||wb.SheetNames[0]];
+  const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:null});
+  const n=v=>{const f=parseFloat(v);return isNaN(f)?0:f;};
+  for(let i=2;i<raw.length;i++){
+    const r=raw[i];if(!r||!r[0]||String(r[0]).includes('Log ID'))continue;
+    const totalScore=n(r[20]),totalMax=n(r[21]);
+    const ovPct=totalMax>0?totalScore/totalMax*100:n(r[22])*100;
+    const rec={
+      log_id:String(r[0]||''),
+      visit_date:r[1]instanceof Date?r[1]:new Date(String(r[1]||'')),
+      dealer:String(r[2]||''),dealer_code:String(r[3]||''),
+      region:String(r[4]||''),brand:String(r[5]||''),
+      visit_type:String(r[6]||''),auditor:String(r[7]||''),
+      p1_score:n(r[8]),p1_max:n(r[9]),p1_pct:n(r[9])>0?n(r[8])/n(r[9])*100:0,
+      p2_score:n(r[11]),p2_max:n(r[12]),p2_pct:n(r[12])>0?n(r[11])/n(r[12])*100:0,
+      p3_score:n(r[14]),p3_max:n(r[15]),p3_pct:n(r[15])>0?n(r[14])/n(r[15])*100:0,
+      p4_score:n(r[17]),p4_max:n(r[18]),p4_pct:n(r[18])>0?n(r[17])/n(r[18])*100:0,
+      total_score:totalScore,total_max:totalMax,
+      overall_pct:ovPct,
+      status:String(r[23]||''),notes:String(r[24]||''),
+      // tech = Pillar 1 Training + Pillar 3 SOP (items 22-26, 81-89, 93)
+      // approximation: P1 Training portion ~80pts, P3 ~290pts
+      tech_score: n(r[8])*0.29 + n(r[14])*0.83,  // rough proxy
+      parts_score: n(r[17]), // P4 = Backend/Parts
+      fname
+    };
+    if(!S.dos.find(d=>d.log_id===rec.log_id))S.dos.push(rec);
+  }
+}
+
+// ════════════════════════════════════════
+// PARSE CSI
+// ════════════════════════════════════════
+// Month name → index (0-based)
+const MONTH_IDX={'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11,
+  'January':0,'February':1,'March':2,'April':3,'June':5,'July':6,'August':7,'September':8,'October':9,'November':10,'December':11};
+function detectMonthIdx(str){
+  for(const[k,v]of Object.entries(MONTH_IDX)){if(str.includes(k))return v;}
+  return -1;
+}
+function parseCsi(wb,fname){
+  // detect month from filename or sheet name
+  let monthIdx=-1;
+  const allNames=[fname,...wb.SheetNames].join(' ');
+  monthIdx=detectMonthIdx(allNames);
+  // also check first sheet data
+  const sumSheet=wb.Sheets[wb.SheetNames.find(s=>s.includes('Summary'))||wb.SheetNames[0]];
+  const sum=XLSX.utils.sheet_to_json(sumSheet,{header:1,defval:null});
+  if(monthIdx<0){
+    for(const row of sum.slice(0,20)){
+      const s=String((row||[]).join(' '));
+      const idx=detectMonthIdx(s);if(idx>=0){monthIdx=idx;break;}
+    }
+  }
+  if(monthIdx<0)monthIdx=new Date().getMonth();
+  const year=2026;
+  const period=new Date(year,monthIdx,1).toLocaleString('en',{month:'short'})+' '+year;
+  const key=`${year}_${String(monthIdx+1).padStart(2,'0')}`;
+
+  let overall=null,q1=null,q2=null,q3=null,q4=null,q5=null,totalSample=0,promotors=null,passive=null,detractors=null;
+  sum.slice(0,30).forEach(row=>{
+    if(!row)return;
+    const rowStr=String(row.join(' ')).toLowerCase();
+    // NPS row
+    if(rowStr.includes('promotor')||rowStr.includes('nps')){
+      row.forEach((v,i)=>{
+        const n=parseFloat(v);if(isNaN(n))return;
+        if(n>0&&n<=1){
+          if(rowStr.includes('promotor'))promotors=Math.round(n*1000)/10;
+          if(rowStr.includes('passive'))passive=Math.round(n*1000)/10;
+          if(rowStr.includes('detract'))detractors=Math.round(n*1000)/10;
+        }
+      });
+    }
+    const vals=row.map(v=>parseFloat(v)).filter(n=>!isNaN(n)&&n>0&&n<=1);
+    if(vals.length>=4&&overall==null){
+      [q1,q2,q3,q4,q5,overall]=[row[5],row[6],row[7],row[8],row[9],row[10]].map(v=>{ const f=parseFloat(v);return isNaN(f)?null:f<=1?Math.round(f*1000)/10:Math.round(f*10)/10;});
+      totalSample=parseInt(row[4])||0;
+    }
+  });
+
+  // Dealer-level data
+  const iaSheet=wb.Sheets[wb.SheetNames.find(s=>s.includes('IA'))||wb.SheetNames[0]];
+  const iaRaw=XLSX.utils.sheet_to_json(iaSheet,{header:1,defval:null});
+  const dealers=[];
+  let hdr=0;
+  for(let i=0;i<iaRaw.length;i++){const r=iaRaw[i];if(r&&r.some(c=>String(c||'').trim()==='Q1')){hdr=i;break;}}
+  const cols=iaRaw[hdr]||[];const ci={};
+  cols.forEach((h,i)=>{const s=String(h||'').toLowerCase().trim();
+    if(s.includes('dealer name'))ci.dealer=i;if(s==='code')ci.code=i;
+    if(s==='q1')ci.q1=i;if(s==='q2')ci.q2=i;if(s==='q3')ci.q3=i;
+    if(s==='q4')ci.q4=i;if(s==='q5')ci.q5=i;
+    if(s.includes('overall'))ci.ov=i;if(s.includes('sample'))ci.sample=i;
+    if(s.includes('promotor'))ci.promotors=i;if(s.includes('passive'))ci.passive=i;if(s.includes('detract'))ci.detractors=i;
+    if(s.includes('lead'))ci.leads=i;
+  });
+  // collect comments per dealer
+  const dealerComments={};
+  const commentSheet=wb.Sheets[wb.SheetNames.find(s=>s.toLowerCase().includes('comment'))||''];
+  if(commentSheet){
+    const cr=XLSX.utils.sheet_to_json(commentSheet,{header:1,defval:null});
+    cr.forEach(row=>{
+      if(!row)return;
+      const dname=String(row[0]||'').trim();
+      const q=String(row[1]||'').trim();
+      const type=String(row[2]||'').toLowerCase();
+      const comment=String(row[3]||'').trim();
+      if(!dname||!comment||comment.length<3)return;
+      if(!dealerComments[dname])dealerComments[dname]={poor:[],neutral:[],good:[]};
+      if(type.includes('poor')||type.includes('ปรับ'))dealerComments[dname].poor.push({q,text:comment});
+      else if(type.includes('good')||type.includes('ดี'))dealerComments[dname].good.push({q,text:comment});
+      else dealerComments[dname].neutral.push({q,text:comment});
+    });
+  }
+
+  for(let i=hdr+1;i<iaRaw.length;i++){
+    const r=iaRaw[i];if(!r)continue;
+    const d=String(r[ci.dealer]||'').trim();if(!d)continue;
+    const nv=v=>{const f=parseFloat(v);if(isNaN(f)||f===0)return null;return f<=1?Math.round(f*1000)/10:Math.round(f*10)/10;};
+    const si=v=>{const n=parseInt(v);return isNaN(n)?0:n;};
+    dealers.push({
+      dealer:d,code:String(r[ci.code]||''),
+      Q1:nv(r[ci.q1]),Q2:nv(r[ci.q2]),Q3:nv(r[ci.q3]),Q4:nv(r[ci.q4]),Q5:nv(r[ci.q5]),
+      overall:nv(r[ci.ov]),sample:si(r[ci.sample]),leads:si(r[ci.leads]||0),
+      promotors:ci.promotors!=null?si(r[ci.promotors]):null,
+      passive:ci.passive!=null?si(r[ci.passive]):null,
+      detractors:ci.detractors!=null?si(r[ci.detractors]):null,
+      comments:dealerComments[d]||{poor:[],neutral:[],good:[]}
+    });
+  }
+
+  // Merge NPS if not in per-dealer cols: distribute from totals
+  const totalP=dealers.reduce((s,d)=>s+(d.promotors||0),0);
+  const totalPa=dealers.reduce((s,d)=>s+(d.passive||0),0);
+  const totalDe=dealers.reduce((s,d)=>s+(d.detractors||0),0);
+
+  S.csi[key]={
+    key,period,monthIdx,fname,
+    overall,q1,q2,q3,q4,q5,totalSample,
+    promotors:promotors||(totalSample>0?Math.round(totalP/totalSample*1000)/10:null),
+    passive:passive||(totalSample>0?Math.round(totalPa/totalSample*1000)/10:null),
+    detractors:detractors||(totalSample>0?Math.round(totalDe/totalSample*1000)/10:null),
+    dealers:dealers.filter(d=>d.overall!==null),
+  };
+}
+
+// ════════════════════════════════════════
+// PARSE TRAINING
+// ════════════════════════════════════════
+function parseTraining(wb,fname){
+  const shName=wb.SheetNames.find(s=>s.includes('Dealer'))||wb.SheetNames[0];
+  const raw=XLSX.utils.sheet_to_json(wb.Sheets[shName],{header:1,defval:null});
+  const si=v=>{const n=parseInt(v);return isNaN(n)?0:n;};
+  const dealers=[];
+  for(let i=3;i<raw.length;i++){
+    const r=raw[i];if(!r||!r[8])continue;if(String(r[1]||'')!=='IA')continue;
+    const l1t=si(r[30]),l1c=si(r[31]),l2t=si(r[33]),l2c=si(r[34]);
+    dealers.push({code:String(r[10]||''),dealer:String(r[8]),tech_count:si(r[20]),l1_trained:l1t,l1_cert:l1c,l2_trained:l2t,l2_cert:l2c,total_cert:l1c+l2c,l1_pct:l1t>0?Math.round(l1c/l1t*100):0,l2_pct:l2t>0?Math.round(l2c/l2t*100):0,s05_trained:si(r[37]),s05_reg:si(r[36]),hunter_trained:si(r[47]),hunter_reg:si(r[46]),avatr_trained:si(r[49]),avatr_reg:si(r[48])});
+  }
+  const tl1t=dealers.reduce((s,d)=>s+d.l1_trained,0),tl1c=dealers.reduce((s,d)=>s+d.l1_cert,0);
+  const tl2t=dealers.reduce((s,d)=>s+d.l2_trained,0),tl2c=dealers.reduce((s,d)=>s+d.l2_cert,0);
+  S.training={fname,dealers,l1_trained:tl1t,l1_cert:tl1c,l2_trained:tl2t,l2_cert:tl2c,l1_pct:tl1t>0?Math.round(tl1c/tl1t*100):0,l2_pct:tl2t>0?Math.round(tl2c/tl2t*100):0};
+}
+
+// ════════════════════════════════════════
+// PARSE ATS
+// ════════════════════════════════════════
+function parseAts(wb,fname){
+  const ws=wb.Sheets[wb.SheetNames[0]];
+  const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,cellDates:true});
+  const h=raw[0]||[];const ci={};
+  const map={dealer:'经销商',model:'车型',status:'工单状态',vin:'VIN',created:'创建时间',reason:'寻求技术支持原因',issue:'问题类型'};
+  Object.entries(map).forEach(([k,zh])=>{ci[k]=h.findIndex(c=>String(c||'').includes(zh));});
+  const vinCnt={};
+  for(let i=1;i<raw.length;i++){const r=raw[i];if(r){const v=String(r[ci.vin]||'');vinCnt[v]=(vinCnt[v]||0)+1;}}
+  const repVins=new Set(Object.keys(vinCnt).filter(v=>vinCnt[v]>1));
+  const tickets=[];
+  for(let i=1;i<raw.length;i++){
+    const r=raw[i];if(!r)continue;
+    const vin=String(r[ci.vin]||''),reason=String(r[ci.reason]||'');
+    const isRep=repVins.has(vin)||reason.includes('多次');
+    const cd=r[ci.created];let month='';
+    if(cd){const d=cd instanceof Date?cd:new Date(cd);if(!isNaN(d))month=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
+    const mr=String(r[ci.model]||'');
+    tickets.push({dealer:String(r[ci.dealer]||''),model:mr.includes('/')?mr.split('/')[1]:mr,status:String(r[ci.status]||''),vin,month,is_repeat:isRep,issue:String(r[ci.issue]||''),reason});
+  }
+  const key=tickets[0]?.month||'2026-05';
+  if(!S.ats[key])S.ats[key]=[];
+  S.ats[key].push(...tickets);
+}
+
+// ════════════════════════════════════════
+// RENDER ALL
+// ════════════════════════════════════════
+function renderAll(){renderOverview();renderDos();renderCsi();renderTraining();renderAts();}
+
+// ════════════════════════════════════════
+// RENDER OVERVIEW (Master Dashboard)
+// ════════════════════════════════════════
+function renderOverview(){
+  const csiLatest=Object.values(S.csi).pop();
+  const tr=S.training;
+  const atsAll=Object.values(S.ats).flat();
+  const dos=S.dos;
+  if(!csiLatest&&!tr&&!atsAll.length&&!dos.length)return;
+
+  const csiOv=csiLatest?.overall??null;
+  const csiSt=csiOv==null?'warn':csiOv>=S.cfg.csi_ov?'pass':csiOv>=(S.cfg.csi_ov-S.cfg.csi_warn)?'warn':'fail';
+  const trL1Pct=tr?.l1_pct??null;
+  const trSt=trL1Pct==null?'warn':trL1Pct>=S.cfg.tr_l1?'pass':trL1Pct>=S.cfg.tr_l1-10?'warn':'fail';
+  const dosAvg=dos.length>0?dos.reduce((s,d)=>s+d.overall_pct,0)/dos.length:null;
+  const dosSt=dosAvg==null?'warn':dosAvg>=S.cfg.dos_pass?'pass':dosAvg>=(S.cfg.dos_pass-S.cfg.dos_warn)?'warn':'fail';
+  const atsTotal=atsAll.length,atsRep=atsAll.filter(t=>t.is_repeat).length;
+  const atsRepPct=atsTotal>0?Math.round(atsRep/atsTotal*100):0;
+  const atsSt=atsRepPct<=S.cfg.ats_rep?'pass':atsRepPct<=S.cfg.ats_rep*1.5?'warn':'fail';
+
+  // DOS category averages
+  const dosTechAvg=dos.length>0?dos.reduce((s,d)=>s+(d.p1_pct+d.p3_pct)/2,0)/dos.length:null;
+  const dosPartsAvg=dos.length>0?dos.reduce((s,d)=>s+d.p4_pct,0)/dos.length:null;
+
+  if(csiLatest)document.getElementById('pchip').textContent=csiLatest.period;
+
+  document.getElementById('ov-content').innerHTML=`
+    <div class="sec-hdr"><span class="sec-title">KPI Summary — All Modules</span><span class="sec-action" onclick="goTo('import')">+ Import Data</span></div>
+
+    <div class="ov-kpis">
+      <div class="ov-kpi" onclick="goTo('dos')">
+        <div class="ov-kpi-top">
+          <div class="ov-icon" style="background:var(--surface2)">◻</div>
+          <span class="badge ${dosSt}">${dosSt==='pass'?'✓ Pass':dosSt==='warn'?'⚠ Warn':'✗ Fail'}</span>
+        </div>
+        <div class="ov-val">${dosAvg!=null?dosAvg.toFixed(0):'—'}<span class="ov-unit">%</span></div>
+        <div class="ov-label">DOS Overall</div>
+        <div class="ov-footer"><span class="ov-sub">${dos.length} visits | Target ${S.cfg.dos_pass}%</span><span class="arrow-link">→</span></div>
+      </div>
+
+      <div class="ov-kpi" onclick="goTo('dos');switchDosTab('tech')">
+        <div class="ov-kpi-top">
+          <div class="ov-icon" style="background:var(--accent-light)">🔧</div>
+          <span class="badge ${dosTechAvg!=null&&dosTechAvg>=S.cfg.dos_tech?'pass':dosTechAvg!=null&&dosTechAvg>=(S.cfg.dos_tech-S.cfg.dos_warn)?'warn':'fail'}">${dosTechAvg!=null?dosTechAvg.toFixed(0)+'%':'—'}</span>
+        </div>
+        <div class="ov-val" style="font-size:24px">${dosTechAvg!=null?dosTechAvg.toFixed(0):'—'}<span class="ov-unit">%</span></div>
+        <div class="ov-label">Technical Section</div>
+        <div class="ov-footer"><span class="ov-sub">P1+P3 avg | Target ${S.cfg.dos_tech}%</span><span class="arrow-link">→</span></div>
+      </div>
+
+      <div class="ov-kpi" onclick="goTo('dos');switchDosTab('parts')">
+        <div class="ov-kpi-top">
+          <div class="ov-icon" style="background:var(--orange-light)">📦</div>
+          <span class="badge ${dosPartsAvg!=null&&dosPartsAvg>=S.cfg.dos_parts?'pass':dosPartsAvg!=null&&dosPartsAvg>=(S.cfg.dos_parts-S.cfg.dos_warn)?'warn':'fail'}">${dosPartsAvg!=null?dosPartsAvg.toFixed(0)+'%':'—'}</span>
+        </div>
+        <div class="ov-val" style="font-size:24px">${dosPartsAvg!=null?dosPartsAvg.toFixed(0):'—'}<span class="ov-unit">%</span></div>
+        <div class="ov-label">Spare Parts Section</div>
+        <div class="ov-footer"><span class="ov-sub">P4 avg | Target ${S.cfg.dos_parts}%</span><span class="arrow-link">→</span></div>
+      </div>
+
+      <div class="ov-kpi" onclick="goTo('csi')">
+        <div class="ov-kpi-top">
+          <div class="ov-icon" style="background:var(--yellow-light)">★</div>
+          <span class="badge ${csiSt}">${csiSt==='pass'?'✓ Pass':csiSt==='warn'?'⚠ Warn':'✗ Fail'}</span>
+        </div>
+        <div class="ov-val">${csiOv??'—'}<span class="ov-unit">%</span></div>
+        <div class="ov-label">CSI Score</div>
+        <div class="ov-footer"><span class="ov-sub">Sample ${csiLatest?.totalSample??'—'} | Target ${S.cfg.csi_ov}%</span><span class="arrow-link">→</span></div>
+      </div>
+
+      <div class="ov-kpi" onclick="goTo('training')">
+        <div class="ov-kpi-top">
+          <div class="ov-icon" style="background:var(--purple-light)">◈</div>
+          <span class="badge ${trSt}">${trL1Pct??'—'}%</span>
+        </div>
+        <div class="ov-val">${tr?.dealers.length??'—'}<span class="ov-unit"> DLR</span></div>
+        <div class="ov-label">Training</div>
+        <div class="ov-footer"><span class="ov-sub">L1: ${trL1Pct??'—'}% | L2: ${tr?.l2_pct??'—'}%</span><span class="arrow-link">→</span></div>
+      </div>
+    </div>
+
+    <!-- Dealer Status Table -->
+    <div class="sec-hdr"><span class="sec-title">Dealer Status Matrix</span></div>
+    <div class="card" style="margin-bottom:18px">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Dealer</th><th>Region</th><th>DOS Overall</th><th>🔧 Technical</th><th>📦 Parts</th><th>CSI</th><th>Last Visit</th><th>Overall</th></tr></thead>
+          <tbody>
+            ${buildDealerMatrix()}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 2-col charts -->
+    <div class="g2">
+      ${csiLatest?`
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">CSI — Q Score Breakdown</span><span class="card-sub">${csiLatest.period}</span></div>
+        <div class="hbar-chart">
+          ${[['Q1','Reception',csiLatest.q1],['Q2','SA Professionalism ★',csiLatest.q2],['Q3','Facility',csiLatest.q3],['Q4','Repair Quality ★',csiLatest.q4],['Q5','Overall',csiLatest.q5]].map(([q,lbl,v])=>`
+            <div class="hbar-row">
+              <div class="hbar-label"><strong>${q}</strong> ${lbl}</div>
+              <div class="hbar-track"><div class="hbar-fill" style="width:${Math.min(v??0,100)}%;background:${barColor(v,S.cfg.csi_ov)}">${(v??0)>20?v+'%':''}</div></div>
+              <div class="hbar-num" style="color:${barColor(v,S.cfg.csi_ov)}">${v??'—'}%</div>
+            </div>`).join('')}
+        </div>
+      </div>`:'<div class="card"><div class="empty" style="padding:32px">ยังไม่มีข้อมูล CSI</div></div>'}
+
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">DOS Pillar Averages</span><span class="card-sub">${dos.length} visits</span></div>
+        <div class="hbar-chart">
+          ${dos.length>0?[
+            ['P1','Service Foundation',dos.reduce((s,d)=>s+d.p1_pct,0)/dos.length],
+            ['P2','Facility & 5S',dos.reduce((s,d)=>s+d.p2_pct,0)/dos.length],
+            ['P3','Operation SOP 🔧',dos.reduce((s,d)=>s+d.p3_pct,0)/dos.length],
+            ['P4','Backend Support 📦',dos.reduce((s,d)=>s+d.p4_pct,0)/dos.length],
+          ].map(([p,lbl,v])=>`
+            <div class="hbar-row">
+              <div class="hbar-label"><strong>${p}</strong> ${lbl}</div>
+              <div class="hbar-track"><div class="hbar-fill" style="width:${Math.min(v,100)}%;background:${barColor(v,S.cfg.dos_pass)}">${v>15?v.toFixed(0)+'%':''}</div></div>
+              <div class="hbar-num" style="color:${barColor(v,S.cfg.dos_pass)}">${v.toFixed(0)}%</div>
+            </div>`).join(''):'<div style="padding:16px;color:var(--text3);font-size:12px">ยังไม่มีข้อมูล DOS</div>'}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function buildDealerMatrix(){
+  const csiLatest=Object.values(S.csi).pop();
+  const dealers=new Set();
+  S.dos.forEach(d=>dealers.add(d.dealer));
+  if(csiLatest)csiLatest.dealers.forEach(d=>dealers.add(d.dealer));
+  if(!dealers.size)return'<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:24px">Import ข้อมูลเพื่อดู Dealer Matrix</td></tr>';
+  return[...dealers].slice(0,20).map((dealer,i)=>{
+    const dosRec=S.dos.filter(d=>d.dealer===dealer).sort((a,b)=>b.visit_date-a.visit_date)[0];
+    const csiRec=csiLatest?.dealers.find(d=>d.dealer===dealer||d.dealer.includes(dealer.split(' ').slice(-1)[0]));
+    const ov=dosRec?.overall_pct??null;
+    const tech=dosRec?(dosRec.p1_pct+dosRec.p3_pct)/2:null;
+    const parts=dosRec?.p4_pct??null;
+    const csiOv=csiRec?.overall??null;
+    const overallGrade=ov!=null?ov>=S.cfg.dos_pass&&(csiOv==null||csiOv>=S.cfg.csi_ov)?'pass':ov>=(S.cfg.dos_pass-S.cfg.dos_warn)?'warn':'fail':'warn';
+    return`<tr>
+      <td>${rankBadge(i)}</td>
+      <td style="font-weight:500;font-size:12px">${dealer.replace(/deepal /i,'').replace(/DEEPAL /,'')}</td>
+      <td style="font-size:11px;color:var(--text3)">${dosRec?.region||'—'}</td>
+      <td>${ov!=null?miniBar(ov,S.cfg.dos_pass):'<span style="color:var(--text3);font-size:11px">—</span>'}</td>
+      <td>${tech!=null?miniBar(tech,S.cfg.dos_tech):'<span style="color:var(--text3);font-size:11px">—</span>'}</td>
+      <td>${parts!=null?miniBar(parts,S.cfg.dos_parts):'<span style="color:var(--text3);font-size:11px">—</span>'}</td>
+      <td>${csiOv!=null?miniBar(csiOv,S.cfg.csi_ov):'<span style="color:var(--text3);font-size:11px">—</span>'}</td>
+      <td style="font-size:10px;color:var(--text3)">${dosRec?dosRec.visit_date instanceof Date?dosRec.visit_date.toLocaleDateString('th-TH'):String(dosRec.visit_date).slice(0,10):'—'}</td>
+      <td>${statusBadge(ov,S.cfg.dos_pass,S.cfg.dos_warn)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════
+// RENDER DOS
+// ════════════════════════════════════════
+let currentDosTab='all';
+function switchDosTab(cat){
+  currentDosTab=cat;
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+  const tab=document.getElementById('dtab-'+cat);
+  if(tab)tab.classList.add('active');
+  renderDosTable(cat);
+}
+
+function renderDos(){
+  const dos=S.dos;if(!dos.length)return;
+  const sorted=[...dos].sort((a,b)=>b.overall_pct-a.overall_pct);
+  const avgOv=dos.reduce((s,d)=>s+d.overall_pct,0)/dos.length;
+  const avgTech=dos.reduce((s,d)=>s+(d.p1_pct+d.p3_pct)/2,0)/dos.length;
+  const avgParts=dos.reduce((s,d)=>s+d.p4_pct,0)/dos.length;
+
+  document.getElementById('dos-content').innerHTML=`
+    <div class="kpi-row">
+      <div class="kpi"><div class="kpi-bar" style="background:var(--text2)"></div>
+        <div class="kpi-label">DOS Visits</div><div class="kpi-val">${dos.length}</div>
+        <div class="kpi-meta"><span class="kpi-sub">records</span><span class="badge info">LOG</span></div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--accent)"></div>
+        <div class="kpi-label">Overall Avg</div><div class="kpi-val">${avgOv.toFixed(0)}<span class="unit">%</span></div>
+        <div class="kpi-meta"><span class="kpi-sub">Target ${S.cfg.dos_pass}%</span>${statusBadge(avgOv,S.cfg.dos_pass,S.cfg.dos_warn)}</div></div>
+      <div class="kpi" onclick="switchDosTab('tech')"><div class="kpi-bar" style="background:var(--accent)"></div>
+        <div class="kpi-label">🔧 Technical</div><div class="kpi-val">${avgTech.toFixed(0)}<span class="unit">%</span></div>
+        <div class="kpi-meta"><span class="kpi-sub">P1+P3 | Target ${S.cfg.dos_tech}%</span>${statusBadge(avgTech,S.cfg.dos_tech,S.cfg.dos_warn)}</div></div>
+      <div class="kpi" onclick="switchDosTab('parts')"><div class="kpi-bar" style="background:var(--orange)"></div>
+        <div class="kpi-label">📦 Spare Parts</div><div class="kpi-val">${avgParts.toFixed(0)}<span class="unit">%</span></div>
+        <div class="kpi-meta"><span class="kpi-sub">P4 | Target ${S.cfg.dos_parts}%</span>${statusBadge(avgParts,S.cfg.dos_parts,S.cfg.dos_warn)}</div></div>
+    </div>
+
+    <!-- Pillar bar chart -->
+    <div class="g2" style="margin-bottom:18px">
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">Dealer Ranking — Overall DOS</span></div>
+        <div class="hbar-chart">
+          ${sorted.map((d,i)=>`
+            <div class="hbar-row">
+              <div class="hbar-label">${rankBadge(i)} ${d.dealer.replace(/deepal /i,'').replace(/DEEPAL /,'').slice(0,22)}</div>
+              <div class="hbar-track"><div class="hbar-fill" style="width:${Math.min(d.overall_pct,100)}%;background:${barColor(d.overall_pct,S.cfg.dos_pass)}">${d.overall_pct>20?d.overall_pct.toFixed(0)+'%':''}</div></div>
+              <div class="hbar-num" style="color:${barColor(d.overall_pct,S.cfg.dos_pass)}">${d.overall_pct.toFixed(0)}%</div>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-hdr"><span class="card-title">🔧 Technical Ranking</span><span class="card-sub">P1+P3 avg</span></div>
+          <div class="hbar-chart">
+            ${[...dos].sort((a,b)=>(b.p1_pct+b.p3_pct)-(a.p1_pct+a.p3_pct)).map((d,i)=>{
+              const v=(d.p1_pct+d.p3_pct)/2;
+              return`<div class="hbar-row">
+                <div class="hbar-label" style="width:150px">${rankBadge(i)} ${d.dealer.replace(/deepal /i,'').slice(0,18)}</div>
+                <div class="hbar-track"><div class="hbar-fill" style="width:${Math.min(v,100)}%;background:${barColor(v,S.cfg.dos_tech)}">${v>20?v.toFixed(0)+'%':''}</div></div>
+                <div class="hbar-num" style="color:${barColor(v,S.cfg.dos_tech)}">${v.toFixed(0)}%</div>
+              </div>`;}).join('')}
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hdr"><span class="card-title">📦 Spare Parts Ranking</span><span class="card-sub">P4</span></div>
+          <div class="hbar-chart">
+            ${[...dos].sort((a,b)=>b.p4_pct-a.p4_pct).map((d,i)=>`
+              <div class="hbar-row">
+                <div class="hbar-label" style="width:150px">${rankBadge(i)} ${d.dealer.replace(/deepal /i,'').slice(0,18)}</div>
+                <div class="hbar-track"><div class="hbar-fill" style="width:${Math.min(d.p4_pct,100)}%;background:${barColor(d.p4_pct,S.cfg.dos_parts)}">${d.p4_pct>20?d.p4_pct.toFixed(0)+'%':''}</div></div>
+                <div class="hbar-num" style="color:${barColor(d.p4_pct,S.cfg.dos_parts)}">${d.p4_pct.toFixed(0)}%</div>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category tabs + item list -->
+    <div class="sec-hdr"><span class="sec-title">DOS Item Categories</span></div>
+    <div class="cat-tabs">
+      <button class="cat-tab all active" id="dtab-all" onclick="switchDosTab('all')">All Items <span class="cat-count">108</span></button>
+      <button class="cat-tab tech" id="dtab-tech" onclick="switchDosTab('tech')">🔧 Technical <span class="cat-count">${Object.keys(DOS_ITEMS).filter(k=>DOS_ITEMS[k].cat==='tech').length}</span></button>
+      <button class="cat-tab parts" id="dtab-parts" onclick="switchDosTab('parts')">📦 Spare Parts <span class="cat-count">${Object.keys(DOS_ITEMS).filter(k=>DOS_ITEMS[k].cat==='parts').length}</span></button>
+      <button class="cat-tab ops" id="dtab-ops" onclick="switchDosTab('ops')">📋 Operations <span class="cat-count">${108-Object.keys(DOS_ITEMS).length}</span></button>
+    </div>
+    <div class="card" id="dos-item-list">
+      <div id="dos-items-body"></div>
+    </div>
+
+    <!-- Full table -->
+    <div class="sec-hdr" style="margin-top:18px"><span class="sec-title">Visit Log — All Records</span></div>
+    <div class="card">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Dealer</th><th>Brand</th><th>Visit Date</th><th>Auditor</th><th>P1 Found.</th><th>P2 Facility</th><th>P3 SOP 🔧</th><th>P4 Backend 📦</th><th>Overall</th><th>Status</th></tr></thead>
+          <tbody>
+            ${sorted.map((d,i)=>`<tr>
+              <td>${rankBadge(i)}</td>
+              <td style="font-weight:500;font-size:12px">${d.dealer}</td>
+              <td style="font-size:11px"><span class="badge ${d.brand==='Avatr'?'purple':'info'}">${d.brand||'Deepal'}</span></td>
+              <td style="color:var(--text3);font-size:11px">${d.visit_date instanceof Date?d.visit_date.toLocaleDateString('th-TH'):String(d.visit_date).slice(0,10)}</td>
+              <td style="color:var(--text3);font-size:11px">${d.auditor}</td>
+              <td>${miniBar(d.p1_pct,S.cfg.dos_pass)}</td>
+              <td>${miniBar(d.p2_pct,S.cfg.dos_pass)}</td>
+              <td>${miniBar(d.p3_pct,S.cfg.dos_tech)}</td>
+              <td>${miniBar(d.p4_pct,S.cfg.dos_parts)}</td>
+              <td>${miniBar(d.overall_pct,S.cfg.dos_pass)}</td>
+              <td>${d.status.includes('PASS')||d.overall_pct>=S.cfg.dos_pass?'<span class="badge pass">✓ Pass</span>':d.overall_pct>=(S.cfg.dos_pass-S.cfg.dos_warn)?'<span class="badge warn">⚠ Warn</span>':'<span class="badge fail">✗ Fail</span>'}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  switchDosTab('all');
+}
+
+function renderDosTable(cat){
+  let items;
+  if(cat==='tech') items=Object.entries(DOS_ITEMS).filter(([,v])=>v.cat==='tech');
+  else if(cat==='parts') items=Object.entries(DOS_ITEMS).filter(([,v])=>v.cat==='parts');
+  else if(cat==='ops') items=[];// placeholder
+  else items=Object.entries(DOS_ITEMS);
+
+  const catColors={tech:'var(--accent)',parts:'var(--orange)',ops:'var(--purple)'};
+
+  const body=document.getElementById('dos-items-body');
+  if(!body)return;
+  if(cat==='ops'){
+    body.innerHTML='<div style="padding:24px;color:var(--text3);font-size:12px;text-align:center">Operations items = ข้อที่ไม่ใช่ Technical/Parts (items 1–13, 16–21, 27–52, 66–80, 88–94) — แสดงในตาราง Visit Log ด้านล่าง</div>';
+    return;
+  }
+  if(!items.length){body.innerHTML='<div style="padding:24px;color:var(--text3);font-size:12px;text-align:center">ยังไม่มีข้อมูล</div>';return;}
+
+  body.innerHTML=items.map(([no,item])=>`
+    <div class="dos-item">
+      <div class="dos-no" style="background:${catColors[item.cat]||'var(--text3)'}">${no}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:10px;font-weight:600;color:var(--text3);margin-bottom:2px">${item.cat==='tech'?'🔧':'📦'} ${item.sub}</div>
+        <div class="dos-text">${item.text}</div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--text2);white-space:nowrap;margin-left:8px">${item.score} pts</div>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════
+// RENDER CSI
+// ════════════════════════════════════════
+// ── Chart registry ──────────────────────────────────────────
+const _charts={};
+function mkChart(id,cfg2){
+  if(_charts[id])try{_charts[id].destroy();}catch(e){}
+  const ctx=document.getElementById(id);if(!ctx)return;
+  _charts[id]=new Chart(ctx,cfg2);
+}
+function chartColors(dark){
+  return{
+    blue:dark?'rgba(77,139,255,1)':'rgba(0,87,255,1)',
+    blueA:dark?'rgba(77,139,255,0.15)':'rgba(0,87,255,0.12)',
+    green:dark?'rgba(34,197,94,1)':'rgba(22,163,74,1)',
+    red:dark?'rgba(248,113,113,1)':'rgba(220,38,38,1)',
+    yellow:dark?'rgba(251,191,36,1)':'rgba(217,119,6,1)',
+    gray:dark?'rgba(148,163,184,1)':'rgba(100,116,139,1)',
+    gridLine:dark?'rgba(30,42,64,1)':'rgba(226,230,237,1)',
+    tick:dark?'#475569':'#94a3b8',
+  };
+}
+function baseChartOpts(dark){
+  const C=chartColors(dark);
+  return{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:C.tick,font:{size:11,family:'Noto Sans Thai'}}},
+      tooltip:{backgroundColor:dark?'#1e2a40':'#fff',titleColor:dark?'#f1f5f9':'#0f172a',bodyColor:dark?'#94a3b8':'#475569',borderColor:dark?'#2a3a56':'#e2e6ed',borderWidth:1,padding:10,cornerRadius:8}},
+    scales:{
+      x:{grid:{color:C.gridLine},ticks:{color:C.tick,font:{size:10,family:'Noto Sans Thai'}}},
+      y:{grid:{color:C.gridLine},ticks:{color:C.tick,font:{size:10,family:'Noto Sans Thai'}},beginAtZero:false}
+    }
+  };
+}
+
+// ── Year series builder ──────────────────────────────────────
+function buildYearSeries(dealerCode){
+  const keys=Object.keys(S.csi).sort();
+  const arr=n=>new Array(n).fill(null);
+  const overall=arr(12),q1s=arr(12),q2s=arr(12),q3s=arr(12),q4s=arr(12),q5s=arr(12);
+  const samples=arr(12),promotors=arr(12),passive=arr(12),detractors=arr(12);
+  for(const key of keys){
+    const d=S.csi[key];const mi=d.monthIdx;
+    if(mi<0||mi>11)continue;
+    if(dealerCode){
+      const dr=d.dealers.find(x=>x.code===dealerCode);
+      if(!dr)continue;
+      overall[mi]=dr.overall;q1s[mi]=dr.Q1;q2s[mi]=dr.Q2;q3s[mi]=dr.Q3;q4s[mi]=dr.Q4;q5s[mi]=dr.Q5;samples[mi]=dr.sample;
+      const tot=dr.sample||1;
+      if(dr.promotors!=null){promotors[mi]=Math.round(dr.promotors/tot*1000)/10;passive[mi]=Math.round((dr.passive||0)/tot*1000)/10;detractors[mi]=Math.round((dr.detractors||0)/tot*1000)/10;}
+    } else {
+      overall[mi]=d.overall;q1s[mi]=d.q1;q2s[mi]=d.q2;q3s[mi]=d.q3;q4s[mi]=d.q4;q5s[mi]=d.q5;samples[mi]=d.totalSample;
+      promotors[mi]=d.promotors;passive[mi]=d.passive;detractors[mi]=d.detractors;
+    }
+  }
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return{months,overall,q1s,q2s,q3s,q4s,q5s,samples,promotors,passive,detractors};
+}
+function buildTotalSeries(){const keys=Object.keys(S.csi).sort();const a=new Array(12).fill(null);for(const k of keys){const d=S.csi[k];if(d.monthIdx>=0&&d.monthIdx<12)a[d.monthIdx]=d.overall;}return a;}
+
+let csiSelectedDealer='';
+
+function renderCsi(){
+  const keys=Object.keys(S.csi).sort();if(!keys.length)return;
+  const latestData=S.csi[keys[keys.length-1]];
+  const cfg=S.cfg;
+  const sorted=[...latestData.dealers].sort((a,b)=>(b.overall||0)-(a.overall||0));
+
+  const dealerOpts='<option value="">— IA Group Overall —</option>'+
+    sorted.map(d=>`<option value="${d.code}" ${csiSelectedDealer===d.code?'selected':''}>${d.dealer.replace(/deepal /i,'')}</option>`).join('');
+
+  document.getElementById('csi-content').innerHTML=`
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 10px;display:flex;align-items:center;gap:8px">
+        <span style="font-size:10px;color:var(--text3);font-weight:700;white-space:nowrap;text-transform:uppercase;letter-spacing:1px">Dealer</span>
+        <select id="csi-dealer-sel" onchange="csiSelectedDealer=this.value;renderCsiCharts()"
+          style="background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:5px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;min-width:220px">
+          ${dealerOpts}
+        </select>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:11px;color:var(--text3)">
+        📅 <strong style="color:var(--text)">${keys.map(k=>S.csi[k].period).join(' · ')}</strong>
+        &nbsp;|&nbsp;<span style="color:var(--accent);cursor:pointer" onclick="goTo('import')">Upload เพิ่ม →</span>
+      </div>
+    </div>
+
+    <div class="kpi-row" id="csi-kpi-row"></div>
+
+    <div class="g2" style="margin-bottom:16px">
+      <div class="card">
+        <div class="card-hdr"><span class="card-title" id="csi-nps-title">NPS — Yearly</span><span class="card-sub">Promotors / Passive / Detractors</span></div>
+        <div style="display:flex;align-items:center;gap:16px;padding:16px">
+          <div style="position:relative;width:155px;height:155px;flex-shrink:0"><canvas id="chart-nps-donut"></canvas></div>
+          <div id="csi-nps-legend" style="flex:1;font-size:12px;line-height:2.4"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="card-title" id="csi-bar-title">Monthly Sample</span><span class="card-sub">Promotors / Passive / Detractors</span></div>
+        <div style="height:185px;padding:10px 14px 4px"><canvas id="chart-sample-bar"></canvas></div>
+      </div>
+    </div>
+
+    <div class="g2" style="margin-bottom:16px">
+      <div class="card">
+        <div class="card-hdr"><span class="card-title" id="csi-trend-title">CSI Score vs KPI</span><span class="card-sub">Jan – Dec 2026</span></div>
+        <div style="height:200px;padding:10px 14px 4px"><canvas id="chart-csi-trend"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="card-title" id="csi-vs-title">Dealer vs IA Total</span><span class="card-sub">Jan – Dec 2026</span></div>
+        <div style="height:200px;padding:10px 14px 4px"><canvas id="chart-csi-vs-total"></canvas></div>
+      </div>
+    </div>
+
+    <div class="g2" style="margin-bottom:16px">
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">Q1–Q5 Breakdown (Latest)</span></div>
+        <div style="height:210px;padding:10px 14px 4px"><canvas id="chart-q-bar"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">Q4 Repair Quality Trend</span><span class="card-sub" style="color:var(--red)">Technical ★ Jan–Dec</span></div>
+        <div style="height:210px;padding:10px 14px 4px"><canvas id="chart-q4-trend"></canvas></div>
+      </div>
+    </div>
+
+    <div class="g2" style="margin-bottom:16px">
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">🏆 Top 10 Dealers</span><span class="card-sub">${latestData.period}</span></div>
+        <div style="height:260px;padding:10px 14px 4px"><canvas id="chart-top10"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">⚠️ Bottom 10 Dealers</span><span class="card-sub">${latestData.period}</span></div>
+        <div style="height:260px;padding:10px 14px 4px"><canvas id="chart-bot10"></canvas></div>
+      </div>
+    </div>
+
+    <div class="sec-hdr"><span class="sec-title">💬 Comments — Q1–Q5</span></div>
+    <div class="g2" style="margin-bottom:16px">
+      <div class="card">
+        <div class="card-hdr" style="border-left:4px solid var(--red)"><span class="card-title" style="color:var(--red)">🔴 Poor — ต้องปรับปรุง</span></div>
+        <div id="csi-comments-poor" style="padding:12px 16px;font-size:12px;line-height:2;color:var(--text2);min-height:80px">—</div>
+      </div>
+      <div class="card">
+        <div class="card-hdr" style="border-left:4px solid var(--green)"><span class="card-title" style="color:var(--green)">🟢 Good — จุดแข็ง</span></div>
+        <div id="csi-comments-good" style="padding:12px 16px;font-size:12px;line-height:2;color:var(--text2);min-height:80px">—</div>
+      </div>
+    </div>
+
+    <div class="sec-hdr"><span class="sec-title">📋 Full Dealer Ranking — ${latestData.period} (${sorted.length} dealers)</span></div>
+    <div class="card"><div class="tbl-wrap"><table>
+      <thead><tr><th>#</th><th>Dealer</th><th>Code</th><th>Q1</th><th>Q2 Prof.</th><th>Q3 Facil.</th><th>Q4 Repair★</th><th>Q5</th><th>Score</th><th>Sample</th><th>Status</th></tr></thead>
+      <tbody id="csi-full-table"></tbody>
+    </table></div></div>
+  `;
+  renderCsiCharts();
+}
+
+function renderCsiCharts(){
+  const isDark=S.mode==='dark';
+  const C=chartColors(isDark);
+  const cfg=S.cfg;
+  const keys=Object.keys(S.csi).sort();if(!keys.length)return;
+  const latestData=S.csi[keys[keys.length-1]];
+  const selEl=document.getElementById('csi-dealer-sel');
+  const selCode=selEl?selEl.value:'';
+  const selDealer=selCode?latestData.dealers.find(d=>d.code===selCode):null;
+  const title=selDealer?selDealer.dealer.replace(/deepal /i,''):'IA Group';
+  const latestSorted=[...latestData.dealers].sort((a,b)=>(b.overall||0)-(a.overall||0));
+
+  // Update subtitles
+  ['csi-nps-title','csi-bar-title','csi-trend-title'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.textContent=el.textContent.split('—')[0].trim()+` — ${title}`;
+  });
+  const vsEl=document.getElementById('csi-vs-title');if(vsEl)vsEl.textContent=selDealer?`${title} vs IA Total`:'IA Total vs KPI';
+
+  const ser=buildYearSeries(selCode);
+  const{months,overall,q1s,q2s,q3s,q4s,q5s,promotors,passive,detractors}=ser;
+  const totalSer=buildTotalSeries();
+  const latestQ=arr=>{for(let i=11;i>=0;i--)if(arr[i]!=null)return arr[i];return null;};
+
+  // KPI cards
+  const kpiEl=document.getElementById('csi-kpi-row');
+  if(kpiEl)kpiEl.innerHTML=[
+    ['Overall CSI',latestQ(overall),cfg.csi_ov,'var(--accent)'],
+    ['Q2 Professionalism',latestQ(q2s),cfg.csi_q2,'var(--green)'],
+    ['Q4 Repair Quality★',latestQ(q4s),cfg.csi_q4,'var(--red)'],
+    ['Q1 Reception',latestQ(q1s),cfg.csi_ov,'var(--yellow)'],
+    ['Q3 Facility',latestQ(q3s),cfg.csi_ov,'var(--text2)'],
+    ['Q5 Overall',latestQ(q5s),cfg.csi_ov,'var(--yellow)'],
+  ].map(([lbl,val,tgt,clr])=>`
+    <div class="kpi"><div class="kpi-bar" style="background:${clr}"></div>
+      <div class="kpi-label">${lbl}</div>
+      <div class="kpi-val">${val!=null?val:'—'}<span class="unit">%</span></div>
+      <div class="kpi-meta"><span class="kpi-sub">Target ${tgt}%</span>${statusBadge(val,tgt,cfg.csi_warn)}</div>
+    </div>`).join('');
+
+  // NPS Donut
+  const lP=latestQ(promotors),lPa=latestQ(passive),lD=latestQ(detractors);
+  const donutData=[lP??59,lPa??29,lD??12];
+  mkChart('chart-nps-donut',{type:'doughnut',
+    data:{labels:['Promotors','Passive','Detractors'],
+      datasets:[{data:donutData,backgroundColor:['#1d4ed8','#6b7280','#dc2626'],borderWidth:0,hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw}%`}}}}
+  });
+  const legEl=document.getElementById('csi-nps-legend');
+  if(legEl){
+    const nps=(donutData[0]-donutData[2]).toFixed(1);
+    legEl.innerHTML=[['🟦 Promotors',donutData[0],'#1d4ed8'],['⬜ Passive',donutData[1],'#6b7280'],['🟥 Detractors',donutData[2],'#dc2626']]
+      .map(([l,v,c])=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:${c};font-weight:600">${l}</span><strong style="font-size:14px">${v}%</strong></div>`).join('')+
+      `<div style="margin-top:10px;font-size:12px;color:var(--text2)">NPS Score<br><strong style="font-size:20px;color:${parseFloat(nps)>=0?'var(--green)':'var(--red)'}">${nps>=0?'+':''}${nps}%</strong></div>`;
+  }
+
+  // Monthly stacked bar (Promotors/Passive/Detractors)
+  mkChart('chart-sample-bar',{type:'bar',
+    data:{labels:months,datasets:[
+      {label:'Promotors',data:promotors,backgroundColor:'rgba(29,78,216,0.85)',borderRadius:3,stack:'s'},
+      {label:'Passive',data:passive,backgroundColor:'rgba(107,114,128,0.7)',borderRadius:0,stack:'s'},
+      {label:'Detractors',data:detractors,backgroundColor:'rgba(220,38,38,0.85)',borderRadius:3,stack:'s'},
+    ]},
+    options:{...baseChartOpts(isDark),scales:{
+      x:{stacked:true,grid:{color:C.gridLine},ticks:{color:C.tick,font:{size:10}}},
+      y:{stacked:true,max:100,grid:{color:C.gridLine},ticks:{color:C.tick,font:{size:10},callback:v=>v+'%'}}
+    }}
+  });
+
+  // CSI Trend line Jan-Dec
+  const kpiLine=new Array(12).fill(cfg.csi_ov);
+  mkChart('chart-csi-trend',{type:'line',
+    data:{labels:months,datasets:[
+      {label:'CSI Score',data:overall,borderColor:C.blue,backgroundColor:C.blueA,fill:true,tension:0.4,pointRadius:5,pointBackgroundColor:C.blue,spanGaps:false},
+      {label:`KPI ${cfg.csi_ov}%`,data:kpiLine,borderColor:C.red,borderDash:[6,4],pointRadius:0,fill:false,borderWidth:1.5},
+    ]},
+    options:{...baseChartOpts(isDark),scales:{
+      x:{grid:{color:C.gridLine},ticks:{color:C.tick,font:{size:10}}},
+      y:{min:0,max:100,grid:{color:C.gridLine},ticks:{color:C.tick,font:{size:10},callback:v=>v+'%'}}
+    }}
+  });
+
+  // Dealer vs Total
+  mkChart('chart-csi-vs-total',{type:'line',
+    data:{labels:months,datasets:[
+      {label:selDealer?title:'IA Total',data:overall,borderColor:C.blue,backgroundColor:C.blueA,fill:true,tension:0.4,pointRadius:5,spanGaps:false},
+      ...(selDealer?[{label:'IA Group',data:totalSer,borderColor:C.red,borderDash:[4,4],pointRadius:3,fill:false,tension:0.4,spanGaps:false,borderWidth:1.5}]:
+        [{label:`KPI ${cfg.csi_ov}%`,data:kpiLine,borderColor:C.red,borderDash:[6,4],pointRadius:0,fill:false,borderWidth:1.5}])
+    ]},
+    options:{...baseChartOpts(isDark),scales:{
+      x:{grid:{color:C.gridLine},ticks:{color:C.tick,font:{size:10}}},
+      y:{min:0,max:100,grid:{color:C.gridLine},ticks:{color:C.tick,font:{size:10},callback:v=>v+'%'}}
+    }}
+  });
+
+  // Q1–Q5 bar latest
+  const qV=[latestQ(q1s),latestQ(q2s),latestQ(q3s),latestQ(q4s),latestQ(q5s)];
+  const qL=['Q1 Reception','Q2 Prof.','Q3 Facility','Q4 Repair★','Q5 Overall'];
+  mkChart('chart-q-bar',{type:'bar',
+    data:{labels:qL,datasets:[
+      {label:'Score',data:qV,backgroundColor:qV.map(v=>v==null?C.gray:v>=cfg.csi_ov?'rgba(22,163,74,0.8)':v>=(cfg.csi_ov-cfg.csi_warn)?'rgba(217,119,6,0.8)':'rgba(220,38,38,0.8)'),borderRadius:5},
+      {label:`Target`,data:new Array(5).fill(cfg.csi_ov),type:'line',borderColor:C.red,borderDash:[4,4],pointRadius:0,fill:false,borderWidth:1.5}
+    ]},
+    options:{...baseChartOpts(isDark),plugins:{...baseChartOpts(isDark).plugins,legend:{labels:{color:C.tick,font:{size:10}}}},
+      scales:{x:{grid:{color:C.gridLine},ticks:{color:C.tick,font:{size:10}}},y:{min:0,max:100,grid:{color:C.gridLine},ticks:{color:C.tick,font:{size:10},callback:v=>v+'%'}}}}
+  });
+
+  // Q4 Trend
+  mkChart('chart-q4-trend',{type:'line',
+    data:{labels:months,datasets:[
+      {label:'Q4 Repair Quality',data:q4s,borderColor:C.red,backgroundColor:'rgba(220,38,38,0.1)',fill:true,tension:0.4,pointRadius:5,spanGaps:false},
+      {label:`Target ${cfg.csi_q4}%`,data:new Array(12).fill(cfg.csi_q4),borderColor:C.yellow,borderDash:[5,5],pointRadius:0,fill:false,borderWidth:1.5},
+    ]},
+    options:{...baseChartOpts(isDark),scales:{
+      x:{grid:{color:C.gridLine},ticks:{color:C.tick,font:{size:10}}},
+      y:{min:0,max:100,grid:{color:C.gridLine},ticks:{color:C.tick,font:{size:10},callback:v=>v+'%'}}
+    }}
+  });
+
+  // Top10 / Bot10 horizontal
+  const hOpts=(tgt)=>({indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw}%`}}},
+    scales:{x:{min:0,max:100,grid:{color:C.gridLine},ticks:{color:C.tick,font:{size:10},callback:v=>v+'%'}},
+            y:{grid:{display:false},ticks:{color:C.tick,font:{size:10}}}}
+  });
+  const top10=[...latestData.dealers].sort((a,b)=>(b.overall||0)-(a.overall||0)).slice(0,10);
+  const bot10=[...latestData.dealers].sort((a,b)=>(a.overall||0)-(b.overall||0)).slice(0,10);
+  mkChart('chart-top10',{type:'bar',
+    data:{labels:top10.map(d=>d.dealer.replace(/deepal /i,'').slice(0,22)),
+      datasets:[{data:top10.map(d=>d.overall||0),backgroundColor:top10.map(d=>(d.overall||0)>=cfg.csi_ov?'rgba(22,163,74,0.8)':'rgba(217,119,6,0.8)'),borderRadius:4}]},
+    options:hOpts(cfg.csi_ov)
+  });
+  mkChart('chart-bot10',{type:'bar',
+    data:{labels:bot10.map(d=>d.dealer.replace(/deepal /i,'').slice(0,22)),
+      datasets:[{data:bot10.map(d=>d.overall||0),backgroundColor:bot10.map(d=>(d.overall||0)<(cfg.csi_ov-cfg.csi_warn)?'rgba(220,38,38,0.8)':'rgba(217,119,6,0.8)'),borderRadius:4}]},
+    options:hOpts(cfg.csi_ov)
+  });
+
+  // Comments
+  const poorEl=document.getElementById('csi-comments-poor');
+  const goodEl=document.getElementById('csi-comments-good');
+  if(poorEl&&goodEl){
+    const fmt=items=>items.length?items.map(c=>`<div style="padding:3px 0;border-bottom:1px solid var(--border)"><span style="font-size:10px;color:var(--text3);font-weight:600">${c.q||''} </span>${c.text}</div>`).join(''):'<span style="color:var(--text3);font-size:11px">เพิ่ม sheet "Comment" ในไฟล์ CSI</span>';
+    let poor=[],good=[];
+    if(selDealer?.comments){poor=selDealer.comments.poor||[];good=selDealer.comments.good||[];}
+    else{keys.forEach(k=>S.csi[k].dealers.forEach(d=>{poor.push(...(d.comments?.poor||[]));good.push(...(d.comments?.good||[]));}))}
+    poorEl.innerHTML=fmt(poor.slice(0,8));
+    goodEl.innerHTML=fmt(good.slice(0,8));
+  }
+
+  // Full table — ALL dealers
+  const tblEl=document.getElementById('csi-full-table');
+  const allSorted=[...latestData.dealers].sort((a,b)=>(b.overall||0)-(a.overall||0));
+  if(tblEl)tblEl.innerHTML=allSorted.map((d,i)=>`<tr>
+    <td>${rankBadge(i)}</td>
+    <td style="font-weight:500;font-size:12px">${d.dealer}</td>
+    <td style="color:var(--text3);font-size:10px">${d.code}</td>
+    <td>${miniBar(d.Q1,cfg.csi_ov)}</td><td>${miniBar(d.Q2,cfg.csi_q2)}</td>
+    <td>${miniBar(d.Q3,cfg.csi_ov)}</td><td>${miniBar(d.Q4,cfg.csi_q4)}</td>
+    <td>${miniBar(d.Q5,cfg.csi_ov)}</td>
+    <td style="font-weight:700;color:${barColor(d.overall,cfg.csi_ov)}">${d.overall??'—'}%</td>
+    <td style="color:var(--text3)">${d.sample}</td>
+    <td>${statusBadge(d.overall,cfg.csi_ov,cfg.csi_warn)}</td>
+  </tr>`).join('');
+}
+
+// ════════════════════════════════════════
+// RENDER TRAINING
+// ════════════════════════════════════════
+function renderTraining(){
+  const d=S.training;if(!d)return;
+  const cfg=S.cfg;
+  const dealers=[...d.dealers].sort((a,b)=>b.l1_cert-a.l1_cert);
+  document.getElementById('tr-content').innerHTML=`
+    <div class="kpi-row">
+      <div class="kpi"><div class="kpi-bar" style="background:var(--accent)"></div>
+        <div class="kpi-label">L1 Certify Rate</div><div class="kpi-val">${d.l1_pct}<span class="unit">%</span></div>
+        <div class="kpi-meta"><span class="kpi-sub">${d.l1_cert}/${d.l1_trained} คน</span>${statusBadge(d.l1_pct,cfg.tr_l1,10)}</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--green)"></div>
+        <div class="kpi-label">L2 Certify Rate</div><div class="kpi-val">${d.l2_pct}<span class="unit">%</span></div>
+        <div class="kpi-meta"><span class="kpi-sub">${d.l2_cert}/${d.l2_trained} คน</span>${statusBadge(d.l2_pct,cfg.tr_l2,10)}</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--yellow)"></div>
+        <div class="kpi-label">IA Dealers</div><div class="kpi-val">${d.dealers.length}</div>
+        <div class="kpi-meta"><span class="kpi-sub">dealers tracked</span><span class="badge info">IA</span></div></div>
+    </div>
+    <div class="card"><div class="tbl-wrap"><table>
+      <thead><tr><th>#</th><th>Dealer</th><th>Tech</th><th>L1 Cert</th><th>L2 Cert</th><th>S05</th><th>Hunter</th><th>Avatr</th><th>≥${cfg.tr_min} cert</th></tr></thead>
+      <tbody>${dealers.map((d,i)=>{
+        const l1p=d.l1_trained>0?Math.round(d.l1_cert/d.l1_trained*100):0;
+        const l2p=d.l2_trained>0?Math.round(d.l2_cert/d.l2_trained*100):0;
+        return`<tr>
+          <td>${rankBadge(i)}</td><td style="font-weight:500;font-size:12px">${d.dealer}</td>
+          <td style="text-align:center;color:var(--text3)">${d.tech_count||'—'}</td>
+          <td>${miniBar(l1p,cfg.tr_l1)}<span style="font-size:10px;color:var(--text3)"> (${d.l1_cert}/${d.l1_trained})</span></td>
+          <td>${miniBar(l2p,cfg.tr_l2)}<span style="font-size:10px;color:var(--text3)"> (${d.l2_cert}/${d.l2_trained})</span></td>
+          <td style="text-align:center;font-size:11px">${d.s05_trained}/${d.s05_reg||0}</td>
+          <td style="text-align:center;font-size:11px">${d.hunter_trained}/${d.hunter_reg||0}</td>
+          <td style="text-align:center;font-size:11px">${d.avatr_trained}/${d.avatr_reg||0}</td>
+          <td>${d.total_cert>=cfg.tr_min?'<span class="badge pass">✓</span>':'<span class="badge fail">✗</span>'}</td>
+        </tr>`;}).join('')}
+      </tbody>
+    </table></div></div>`;
+}
+
+// ════════════════════════════════════════
+// RENDER ATS
+// ════════════════════════════════════════
+function renderAts(){
+  const all=Object.values(S.ats).flat();if(!all.length)return;
+  const cfg=S.cfg;
+  const total=all.length,rep=all.filter(t=>t.is_repeat).length,open=all.filter(t=>t.status==='处理中').length,closed=all.filter(t=>t.status==='已完成').length;
+  const repPct=Math.round(rep/total*100);
+  const byDealer={};
+  all.forEach(t=>{if(!byDealer[t.dealer])byDealer[t.dealer]={total:0,rep:0,open:0};byDealer[t.dealer].total++;if(t.is_repeat)byDealer[t.dealer].rep++;if(t.status==='处理中')byDealer[t.dealer].open++;});
+  const dealerRows=Object.entries(byDealer).sort((a,b)=>b[1].total-a[1].total);
+  const maxV=Math.max(...dealerRows.map(([,v])=>v.total));
+  document.getElementById('ats-content').innerHTML=`
+    <div class="kpi-row">
+      <div class="kpi"><div class="kpi-bar" style="background:var(--accent)"></div>
+        <div class="kpi-label">Total Tickets</div><div class="kpi-val">${total}</div>
+        <div class="kpi-meta"><span class="kpi-sub">ทุก dealer</span><span class="badge info">ATS</span></div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--yellow)"></div>
+        <div class="kpi-label">Open</div><div class="kpi-val">${open}</div>
+        <div class="kpi-meta"><span class="kpi-sub">${Math.round(open/total*100)}% of total</span>${statusBadge(100-Math.round(open/total*100),100-cfg.ats_open,10)}</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--green)"></div>
+        <div class="kpi-label">Closed</div><div class="kpi-val">${closed}</div>
+        <div class="kpi-meta"><span class="kpi-sub">${Math.round(closed/total*100)}%</span><span class="badge pass">✓</span></div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--red)"></div>
+        <div class="kpi-label">Repeat Cases</div><div class="kpi-val">${rep}</div>
+        <div class="kpi-meta"><span class="kpi-sub">${repPct}% of total</span>${statusBadge(100-repPct,100-cfg.ats_rep,5)}</div></div>
+    </div>
+    <div class="g2">
+      <div class="card"><div class="card-hdr"><span class="card-title">Ticket Volume by Dealer</span></div>
+        <div class="hbar-chart">${dealerRows.slice(0,15).map(([dealer,v])=>`
+          <div class="hbar-row">
+            <div class="hbar-label">${dealer.replace(/Deepal |DEEPAL /,'').slice(0,22)}</div>
+            <div class="hbar-track"><div class="hbar-fill" style="width:${Math.round(v.total/maxV*100)}%;background:${v.total>cfg.ats_max?'var(--red)':'var(--accent)'}"> ${v.total>3?v.total:''}</div></div>
+            <div class="hbar-num">${v.total}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div class="card"><div class="card-hdr"><span class="card-title">⚠ Repeat Repair Cases</span></div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Dealer</th><th>Repeat</th><th>Total</th><th>Rate</th></tr></thead>
+          <tbody>${dealerRows.filter(([,v])=>v.rep>0).sort((a,b)=>b[1].rep-a[1].rep).slice(0,10).map(([dealer,v])=>{
+            const rate=Math.round(v.rep/v.total*100);
+            return`<tr><td style="font-size:11px">${dealer.replace(/Deepal /,'').slice(0,22)}</td>
+              <td><span style="color:var(--red);font-weight:700">${v.rep}</span></td>
+              <td style="color:var(--text3)">${v.total}</td>
+              <td>${statusBadge(100-rate,100-cfg.ats_rep,5)}</td></tr>`;
+          }).join('')}
+          </tbody>
+        </table></div>
+      </div>
+    </div>`;
+}
+
+// ════════════════════════════════════════
+// SETTINGS
+// ════════════════════════════════════════
+function saveSettings(){
+  S.cfg={
+    csi_ov:+document.getElementById('c-csi-ov').value,
+    csi_q2:+document.getElementById('c-csi-q2').value,
+    csi_q4:+document.getElementById('c-csi-q4').value,
+    csi_warn:+document.getElementById('c-csi-warn').value,
+    tr_min:+document.getElementById('c-tr-min').value,
+    tr_l1:+document.getElementById('c-tr-l1').value,
+    tr_l2:+document.getElementById('c-tr-l2').value,
+    dos_pass:+document.getElementById('c-dos-pass').value,
+    dos_warn:+document.getElementById('c-dos-warn').value,
+    dos_tech:+document.getElementById('c-dos-tech').value,
+    dos_parts:+document.getElementById('c-dos-parts').value,
+    ats_rep:+document.getElementById('c-ats-rep').value,
+    ats_open:+document.getElementById('c-ats-open').value,
+    ats_max:+document.getElementById('c-ats-max').value,
+  };
+  renderAll();
+  alert('✅ Settings saved');
+}
+
+// ════════════════════════════════════════
+// REPORT & PRINT
+// ════════════════════════════════════════
+function generateReport(){
+  const csi=Object.values(S.csi).pop();
+  const tr=S.training;
+  const dos=S.dos;
+  const atsAll=Object.values(S.ats).flat();
+  const period=csi?.period||new Date().toLocaleDateString('th-TH',{month:'long',year:'numeric'});
+  document.getElementById('rpt-period').textContent=`Period: ${period} | Generated: ${new Date().toLocaleString('th-TH')}`;
+  const dosAvg=dos.length>0?dos.reduce((s,d)=>s+d.overall_pct,0)/dos.length:null;
+  const dosTech=dos.length>0?dos.reduce((s,d)=>s+(d.p1_pct+d.p3_pct)/2,0)/dos.length:null;
+  const dosParts=dos.length>0?dos.reduce((s,d)=>s+d.p4_pct,0)/dos.length:null;
+  const atsTotal=atsAll.length,atsRep=atsAll.filter(t=>t.is_repeat).length;
+  document.getElementById('rpt-body').innerHTML=`
+    <div class="report-section">
+      <div class="report-section-title">Executive Summary</div>
+      <div class="report-kpi-grid">
+        <div class="r-kpi"><div class="r-kpi-val" style="color:${barColor(dosAvg,S.cfg.dos_pass)}">${dosAvg!=null?dosAvg.toFixed(0)+'%':'—'}</div><div class="r-kpi-label">DOS Overall</div></div>
+        <div class="r-kpi"><div class="r-kpi-val" style="color:${barColor(dosTech,S.cfg.dos_tech)}">${dosTech!=null?dosTech.toFixed(0)+'%':'—'}</div><div class="r-kpi-label">🔧 Technical</div></div>
+        <div class="r-kpi"><div class="r-kpi-val" style="color:${barColor(dosParts,S.cfg.dos_parts)}">${dosParts!=null?dosParts.toFixed(0)+'%':'—'}</div><div class="r-kpi-label">📦 Spare Parts</div></div>
+        <div class="r-kpi"><div class="r-kpi-val" style="color:${barColor(csi?.overall,S.cfg.csi_ov)}">${csi?.overall??'—'}%</div><div class="r-kpi-label">CSI Score</div></div>
+        <div class="r-kpi"><div class="r-kpi-val" style="color:${barColor(tr?.l1_pct,S.cfg.tr_l1)}">${tr?.l1_pct??'—'}%</div><div class="r-kpi-label">L1 Certify</div></div>
+        <div class="r-kpi"><div class="r-kpi-val" style="color:${barColor(tr?.l2_pct,S.cfg.tr_l2)}">${tr?.l2_pct??'—'}%</div><div class="r-kpi-label">L2 Certify</div></div>
+        <div class="r-kpi"><div class="r-kpi-val">${atsTotal}</div><div class="r-kpi-label">ATS Tickets</div></div>
+        <div class="r-kpi"><div class="r-kpi-val" style="color:var(--red)">${atsRep}</div><div class="r-kpi-label">Repeat Cases</div></div>
+      </div>
+    </div>
+
+    ${dos.length?`
+    <div class="report-section">
+      <div class="report-section-title">DOS — Dealer Ranking (${dos.length} visits)</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr style="background:var(--surface2)"><th style="padding:7px 10px;text-align:left;font-size:10px;color:var(--text3)">Dealer</th><th style="padding:7px;font-size:10px;color:var(--text3)">P1</th><th style="padding:7px;font-size:10px;color:var(--text3)">P2</th><th style="padding:7px;font-size:10px;color:var(--text3)">P3 🔧</th><th style="padding:7px;font-size:10px;color:var(--text3)">P4 📦</th><th style="padding:7px;font-size:10px;color:var(--text3)">Overall</th><th style="padding:7px;font-size:10px;color:var(--text3)">Status</th></tr></thead>
+        <tbody>${[...dos].sort((a,b)=>b.overall_pct-a.overall_pct).map(d=>`
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:7px 10px;font-weight:500">${d.dealer}</td>
+            <td style="padding:7px;text-align:center;color:${barColor(d.p1_pct,S.cfg.dos_pass)}">${d.p1_pct.toFixed(0)}%</td>
+            <td style="padding:7px;text-align:center;color:${barColor(d.p2_pct,S.cfg.dos_pass)}">${d.p2_pct.toFixed(0)}%</td>
+            <td style="padding:7px;text-align:center;color:${barColor(d.p3_pct,S.cfg.dos_tech)};font-weight:600">${d.p3_pct.toFixed(0)}%</td>
+            <td style="padding:7px;text-align:center;color:${barColor(d.p4_pct,S.cfg.dos_parts)};font-weight:600">${d.p4_pct.toFixed(0)}%</td>
+            <td style="padding:7px;text-align:center;font-weight:700;color:${barColor(d.overall_pct,S.cfg.dos_pass)}">${d.overall_pct.toFixed(0)}%</td>
+            <td style="padding:7px;text-align:center">${d.overall_pct>=S.cfg.dos_pass?'✅ Pass':d.overall_pct>=(S.cfg.dos_pass-S.cfg.dos_warn)?'⚠️ Warn':'❌ Fail'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`:''}
+
+    ${csi?`
+    <div class="report-section">
+      <div class="report-section-title">CSI — ${csi.period} (${csi.totalSample} responses)</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Q4 Repair Quality: <strong style="color:${barColor(csi.q4,S.cfg.csi_q4)}">${csi.q4??'—'}%</strong> | Q2 Professionalism: <strong>${csi.q2??'—'}%</strong> | Overall: <strong>${csi.overall??'—'}%</strong></div>
+      ${[...csi.dealers].sort((a,b)=>(b.overall||0)-(a.overall||0)).slice(0,10).map((d,i)=>`
+        <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px">
+          <span style="width:20px;color:var(--text3)">${i+1}</span>
+          <span style="flex:1">${d.dealer}</span>
+          <span style="font-weight:600;color:${barColor(d.overall,S.cfg.csi_ov)}">${d.overall??'—'}%</span>
+        </div>`).join('')}
+    </div>`:''}
+
+    <div class="report-section" style="background:var(--surface2);border-radius:8px;padding:14px">
+      <div class="report-section-title">Key Action Items</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.9">
+        ${dosAvg!=null&&dosAvg<S.cfg.dos_pass?`🔴 DOS Overall ต่ำกว่า target (${dosAvg.toFixed(0)}% vs ${S.cfg.dos_pass}%) — ต้อง Action Plan ทุก dealer ที่ fail<br>`:''}
+        ${dosTech!=null&&dosTech<S.cfg.dos_tech?`🔴 Technical Section (P1+P3) ต้องปรับปรุง: avg ${dosTech.toFixed(0)}% vs target ${S.cfg.dos_tech}%<br>`:''}
+        ${dosParts!=null&&dosParts<S.cfg.dos_parts?`🟡 Spare Parts Section (P4) ต้องเฝ้าระวัง: avg ${dosParts.toFixed(0)}% vs target ${S.cfg.dos_parts}%<br>`:''}
+        ${csi?.q4!=null&&csi.q4<S.cfg.csi_q4?`🔴 CSI Q4 Repair Quality ต่ำกว่า target: ${csi.q4}% vs ${S.cfg.csi_q4}%<br>`:''}
+        ${atsRep>0?`🟡 Repeat Repair Cases: ${atsRep} cases (${Math.round(atsRep/atsTotal*100)}%) — ต้องตรวจสอบ root cause<br>`:''}
+        ${!dos.length&&!csi&&!tr?'⚪ ยังไม่มีข้อมูล — กรุณา Import ไฟล์ก่อน Generate Report':''}
+      </div>
+    </div>
+  `;
+  document.getElementById('report-overlay').classList.add('open');
+}
+
+function closeReport(){document.getElementById('report-overlay').classList.remove('open');}
+
+function printReport(){
+  const body=document.getElementById('rpt-body').innerHTML;
+  const period=document.getElementById('rpt-period').textContent;
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>IA Aftersales Report</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body{font-family:'Noto Sans Thai',sans-serif;font-size:13px;color:#0f172a;padding:32px;max-width:900px;margin:0 auto}
+    h1{font-size:20px;color:#0057ff;margin-bottom:4px}
+    .sub{font-size:11px;color:#94a3b8;margin-bottom:24px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:7px 10px;text-align:left;border-bottom:1px solid #e2e6ed;font-size:12px}
+    th{background:#f7f8fa;font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#64748b}
+    .r-kpi{display:inline-block;background:#f7f8fa;border-radius:8px;padding:10px 14px;text-align:center;margin:4px}
+    .r-kpi-val{font-size:22px;font-weight:700}
+    .r-kpi-label{font-size:10px;color:#64748b;margin-top:2px}
+    @media print{@page{size:A4;margin:20mm}}
+  </style></head><body>
+  <h1>📊 IA Aftersales Monthly Report</h1>
+  <div class="sub">${period}</div>
+  ${body}
+  <script>window.onload=()=>window.print();<\/script>
+  </body></html>`);
+  w.document.close();
+}
+
+function printDirect(){
+  window.print();
+}
+
+// ════════════════════════════════════════
+// DEMO DATA
+// ════════════════════════════════════════
+function loadDemo(){
+  S.csi['2026_01']={key:'2026_01',period:'Jan 2026',monthIdx:0,fname:'DEMO_CSI_Jan2026.xlsx',
+    overall:73.4,q1:75.2,q2:71.1,q3:74.3,q4:62.4,q5:70.1,totalSample:245,
+    promotors:62,passive:27,detractors:11,
+    dealers:[
+      {code:'C22793',dealer:'Deepal Chookiat Pattani',Q1:100,Q2:90.9,Q3:100,Q4:100,Q5:100,overall:98,sample:18,promotors:10,passive:4,detractors:1,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20283',dealer:'Deepal R3 Eviq Ramindra',Q1:100,Q2:100,Q3:90.9,Q4:66.7,Q5:100,overall:88,sample:18,promotors:10,passive:4,detractors:1,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20275',dealer:'Deepal Creation Ayutthaya',Q1:92.7,Q2:87.5,Q3:87.5,Q4:81.8,Q5:89.7,overall:85,sample:18,promotors:10,passive:4,detractors:1,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C21161',dealer:'Deepal Wavy Nakhon Si',Q1:100,Q2:87.5,Q3:87.5,Q4:null,Q5:71.4,overall:82,sample:18,promotors:10,passive:4,detractors:1,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20941',dealer:'Deepal Grand Auto Hatyai',Q1:85.7,Q2:78.6,Q3:78.6,Q4:null,Q5:78.6,overall:78,sample:18,promotors:10,passive:4,detractors:1,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19556',dealer:'Deepal Ch Erawan Kanchanaburi',Q1:81.3,Q2:81.3,Q3:87.5,Q4:50,Q5:75,overall:75,sample:18,promotors:10,passive:4,detractors:1,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19557',dealer:'Deepal Galax Rayong',Q1:66.7,Q2:73.3,Q3:86.7,Q4:33.3,Q5:73.3,overall:68,sample:18,promotors:10,passive:4,detractors:1,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19553',dealer:'Deepal Galax Rama 2',Q1:77.8,Q2:61.1,Q3:66.7,Q4:50,Q5:68.8,overall:64,sample:18,promotors:10,passive:4,detractors:1,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19558',dealer:'Deepal One Chonburi',Q1:81.8,Q2:54.5,Q3:68.2,Q4:60,Q5:63.6,overall:62,sample:18,promotors:10,passive:4,detractors:1,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19552',dealer:'Deepal Galax Kanchanaphisek',Q1:68.4,Q2:63.2,Q3:57.9,Q4:75,Q5:63.2,overall:61,sample:18,promotors:10,passive:4,detractors:1,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19555',dealer:'Deepal Ch.Erawan Salaya',Q1:57.1,Q2:71.4,Q3:57.1,Q4:100,Q5:57.1,overall:58,sample:18,promotors:10,passive:4,detractors:1,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20273',dealer:'Deepal Maxtech Bangyai',Q1:59.3,Q2:51.9,Q3:63,Q4:66.7,Q5:70.4,overall:57,sample:18,promotors:10,passive:4,detractors:1,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20274',dealer:'Deepal S.K Bangbuathong',Q1:45.5,Q2:54.5,Q3:51.5,Q4:75,Q5:42.4,overall:48,sample:18,promotors:10,passive:4,detractors:1,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20943',dealer:'Deepal BKK Vipawadee',Q1:47.1,Q2:47.1,Q3:58.8,Q4:40,Q5:52.9,overall:49,sample:18,promotors:10,passive:4,detractors:1,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19554',dealer:'Deepal Galax Suwinthawong',Q1:50,Q2:43.8,Q3:56.3,Q4:44.4,Q5:33.3,overall:42,sample:18,promotors:10,passive:4,detractors:1,comments:{
+    poor:[
+      {q:'Q1-1',text:'ไม่มีการโทรติดตามและแนะนำเชิงรุก'},
+      {q:'Q3-1',text:'มีการแจ้งขั้นตอนการซ่อมบำรุง'},
+      {q:'Q4-1',text:'ซ่อมไม่เสร็จ / ส่งอะไหล่ผิด'},
+      {q:'Q4-2',text:'ระยะเวลาการรออะไหล่นาน / การประสานงานด้านอะไหล่ไม่ตรงกัน'},
+      {q:'Q5-1',text:'ช่างยังมีความเป็นมืออาชีพ ดูแลรถได้ดี'},
+    ],
+    good:[
+      {q:'Q1-2',text:'เต็มใจบริการ มีทัศนคติเชิงบวก ยิ้มแย้ม'},
+      {q:'Q2-1',text:'แต่งกายชุดเครื่องแบบแบบพนักงานสุภาพเรียบร้อย'},
+      {q:'Q3-2',text:'อาหารและเครื่องดื่มในห้องรับรอง'},
+      {q:'Q5-2',text:'ความสะอาดเรียบร้อยของศูนย์บริการ'},
+    ],
+    neutral:[]
+  }}
+    ]};
+  S.csi['2026_02']={key:'2026_02',period:'Feb 2026',monthIdx:1,fname:'DEMO_CSI_Feb2026.xlsx',
+    overall:71.8,q1:74.1,q2:69.5,q3:73.2,q4:58.8,q5:68.9,totalSample:278,
+    promotors:59,passive:29,detractors:12,
+    dealers:[
+      {code:'C22793',dealer:'Deepal Chookiat Pattani',Q1:100,Q2:90.9,Q3:100,Q4:100,Q5:100,overall:96,sample:20,promotors:10,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20283',dealer:'Deepal R3 Eviq Ramindra',Q1:100,Q2:100,Q3:90.9,Q4:66.7,Q5:100,overall:91,sample:20,promotors:10,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20275',dealer:'Deepal Creation Ayutthaya',Q1:92.7,Q2:87.5,Q3:87.5,Q4:81.8,Q5:89.7,overall:86,sample:20,promotors:10,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C21161',dealer:'Deepal Wavy Nakhon Si',Q1:100,Q2:87.5,Q3:87.5,Q4:null,Q5:71.4,overall:84,sample:20,promotors:10,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20941',dealer:'Deepal Grand Auto Hatyai',Q1:85.7,Q2:78.6,Q3:78.6,Q4:null,Q5:78.6,overall:79,sample:20,promotors:10,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19556',dealer:'Deepal Ch Erawan Kanchanaburi',Q1:81.3,Q2:81.3,Q3:87.5,Q4:50,Q5:75,overall:76,sample:20,promotors:10,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19557',dealer:'Deepal Galax Rayong',Q1:66.7,Q2:73.3,Q3:86.7,Q4:33.3,Q5:73.3,overall:70,sample:20,promotors:10,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19553',dealer:'Deepal Galax Rama 2',Q1:77.8,Q2:61.1,Q3:66.7,Q4:50,Q5:68.8,overall:65,sample:20,promotors:10,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19558',dealer:'Deepal One Chonburi',Q1:81.8,Q2:54.5,Q3:68.2,Q4:60,Q5:63.6,overall:64,sample:20,promotors:10,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19552',dealer:'Deepal Galax Kanchanaphisek',Q1:68.4,Q2:63.2,Q3:57.9,Q4:75,Q5:63.2,overall:62,sample:20,promotors:10,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19555',dealer:'Deepal Ch.Erawan Salaya',Q1:57.1,Q2:71.4,Q3:57.1,Q4:100,Q5:57.1,overall:59,sample:20,promotors:10,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20273',dealer:'Deepal Maxtech Bangyai',Q1:59.3,Q2:51.9,Q3:63,Q4:66.7,Q5:70.4,overall:58,sample:20,promotors:10,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20274',dealer:'Deepal S.K Bangbuathong',Q1:45.5,Q2:54.5,Q3:51.5,Q4:75,Q5:42.4,overall:49,sample:20,promotors:10,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20943',dealer:'Deepal BKK Vipawadee',Q1:47.1,Q2:47.1,Q3:58.8,Q4:40,Q5:52.9,overall:50,sample:20,promotors:10,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19554',dealer:'Deepal Galax Suwinthawong',Q1:50,Q2:43.8,Q3:56.3,Q4:44.4,Q5:33.3,overall:44,sample:20,promotors:10,passive:5,detractors:2,comments:{
+    poor:[
+      {q:'Q1-1',text:'ไม่มีการโทรติดตามและแนะนำเชิงรุก'},
+      {q:'Q3-1',text:'มีการแจ้งขั้นตอนการซ่อมบำรุง'},
+      {q:'Q4-1',text:'ซ่อมไม่เสร็จ / ส่งอะไหล่ผิด'},
+      {q:'Q4-2',text:'ระยะเวลาการรออะไหล่นาน / การประสานงานด้านอะไหล่ไม่ตรงกัน'},
+      {q:'Q5-1',text:'ช่างยังมีความเป็นมืออาชีพ ดูแลรถได้ดี'},
+    ],
+    good:[
+      {q:'Q1-2',text:'เต็มใจบริการ มีทัศนคติเชิงบวก ยิ้มแย้ม'},
+      {q:'Q2-1',text:'แต่งกายชุดเครื่องแบบแบบพนักงานสุภาพเรียบร้อย'},
+      {q:'Q3-2',text:'อาหารและเครื่องดื่มในห้องรับรอง'},
+      {q:'Q5-2',text:'ความสะอาดเรียบร้อยของศูนย์บริการ'},
+    ],
+    neutral:[]
+  }}
+    ]};
+  S.csi['2026_03']={key:'2026_03',period:'Mar 2026',monthIdx:2,fname:'DEMO_CSI_Mar2026.xlsx',
+    overall:72.5,q1:73.8,q2:70.2,q3:72.6,q4:63.1,q5:70.4,totalSample:295,
+    promotors:61,passive:28,detractors:11,
+    dealers:[
+      {code:'C22793',dealer:'Deepal Chookiat Pattani',Q1:100,Q2:90.9,Q3:100,Q4:100,Q5:100,overall:97,sample:21,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20283',dealer:'Deepal R3 Eviq Ramindra',Q1:100,Q2:100,Q3:90.9,Q4:66.7,Q5:100,overall:93,sample:21,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20275',dealer:'Deepal Creation Ayutthaya',Q1:92.7,Q2:87.5,Q3:87.5,Q4:81.8,Q5:89.7,overall:87,sample:21,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C21161',dealer:'Deepal Wavy Nakhon Si',Q1:100,Q2:87.5,Q3:87.5,Q4:null,Q5:71.4,overall:85,sample:21,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20941',dealer:'Deepal Grand Auto Hatyai',Q1:85.7,Q2:78.6,Q3:78.6,Q4:null,Q5:78.6,overall:80,sample:21,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19556',dealer:'Deepal Ch Erawan Kanchanaburi',Q1:81.3,Q2:81.3,Q3:87.5,Q4:50,Q5:75,overall:77,sample:21,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19557',dealer:'Deepal Galax Rayong',Q1:66.7,Q2:73.3,Q3:86.7,Q4:33.3,Q5:73.3,overall:71,sample:21,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19553',dealer:'Deepal Galax Rama 2',Q1:77.8,Q2:61.1,Q3:66.7,Q4:50,Q5:68.8,overall:66,sample:21,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19558',dealer:'Deepal One Chonburi',Q1:81.8,Q2:54.5,Q3:68.2,Q4:60,Q5:63.6,overall:65,sample:21,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19552',dealer:'Deepal Galax Kanchanaphisek',Q1:68.4,Q2:63.2,Q3:57.9,Q4:75,Q5:63.2,overall:63,sample:21,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19555',dealer:'Deepal Ch.Erawan Salaya',Q1:57.1,Q2:71.4,Q3:57.1,Q4:100,Q5:57.1,overall:60,sample:21,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20273',dealer:'Deepal Maxtech Bangyai',Q1:59.3,Q2:51.9,Q3:63,Q4:66.7,Q5:70.4,overall:60,sample:21,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20274',dealer:'Deepal S.K Bangbuathong',Q1:45.5,Q2:54.5,Q3:51.5,Q4:75,Q5:42.4,overall:50,sample:21,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20943',dealer:'Deepal BKK Vipawadee',Q1:47.1,Q2:47.1,Q3:58.8,Q4:40,Q5:52.9,overall:51,sample:21,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19554',dealer:'Deepal Galax Suwinthawong',Q1:50,Q2:43.8,Q3:56.3,Q4:44.4,Q5:33.3,overall:45,sample:21,promotors:11,passive:5,detractors:2,comments:{
+    poor:[
+      {q:'Q1-1',text:'ไม่มีการโทรติดตามและแนะนำเชิงรุก'},
+      {q:'Q3-1',text:'มีการแจ้งขั้นตอนการซ่อมบำรุง'},
+      {q:'Q4-1',text:'ซ่อมไม่เสร็จ / ส่งอะไหล่ผิด'},
+      {q:'Q4-2',text:'ระยะเวลาการรออะไหล่นาน / การประสานงานด้านอะไหล่ไม่ตรงกัน'},
+      {q:'Q5-1',text:'ช่างยังมีความเป็นมืออาชีพ ดูแลรถได้ดี'},
+    ],
+    good:[
+      {q:'Q1-2',text:'เต็มใจบริการ มีทัศนคติเชิงบวก ยิ้มแย้ม'},
+      {q:'Q2-1',text:'แต่งกายชุดเครื่องแบบแบบพนักงานสุภาพเรียบร้อย'},
+      {q:'Q3-2',text:'อาหารและเครื่องดื่มในห้องรับรอง'},
+      {q:'Q5-2',text:'ความสะอาดเรียบร้อยของศูนย์บริการ'},
+    ],
+    neutral:[]
+  }}
+    ]};
+  S.csi['2026_04']={key:'2026_04',period:'Apr 2026',monthIdx:3,fname:'DEMO_CSI_Apr2026.xlsx',
+    overall:69.2,q1:72.7,q2:67.8,q3:71.4,q4:56.6,q5:66.6,totalSample:303,
+    promotors:59,passive:29,detractors:12,
+    dealers:[
+      {code:'C22793',dealer:'Deepal Chookiat Pattani',Q1:100,Q2:90.9,Q3:100,Q4:100,Q5:100,overall:97.9,sample:22,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20283',dealer:'Deepal R3 Eviq Ramindra',Q1:100,Q2:100,Q3:90.9,Q4:66.7,Q5:100,overall:95.7,sample:22,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20275',dealer:'Deepal Creation Ayutthaya',Q1:92.7,Q2:87.5,Q3:87.5,Q4:81.8,Q5:89.7,overall:88.9,sample:22,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C21161',dealer:'Deepal Wavy Nakhon Si',Q1:100,Q2:87.5,Q3:87.5,Q4:null,Q5:71.4,overall:87.1,sample:22,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20941',dealer:'Deepal Grand Auto Hatyai',Q1:85.7,Q2:78.6,Q3:78.6,Q4:null,Q5:78.6,overall:80.4,sample:22,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19556',dealer:'Deepal Ch Erawan Kanchanaburi',Q1:81.3,Q2:81.3,Q3:87.5,Q4:50,Q5:75,overall:78.6,sample:22,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19557',dealer:'Deepal Galax Rayong',Q1:66.7,Q2:73.3,Q3:86.7,Q4:33.3,Q5:73.3,overall:71.2,sample:22,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19553',dealer:'Deepal Galax Rama 2',Q1:77.8,Q2:61.1,Q3:66.7,Q4:50,Q5:68.8,overall:67.1,sample:22,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19558',dealer:'Deepal One Chonburi',Q1:81.8,Q2:54.5,Q3:68.2,Q4:60,Q5:63.6,overall:66.7,sample:22,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19552',dealer:'Deepal Galax Kanchanaphisek',Q1:68.4,Q2:63.2,Q3:57.9,Q4:75,Q5:63.2,overall:63.8,sample:22,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19555',dealer:'Deepal Ch.Erawan Salaya',Q1:57.1,Q2:71.4,Q3:57.1,Q4:100,Q5:57.1,overall:61.4,sample:22,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20273',dealer:'Deepal Maxtech Bangyai',Q1:59.3,Q2:51.9,Q3:63,Q4:66.7,Q5:70.4,overall:61.4,sample:22,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20274',dealer:'Deepal S.K Bangbuathong',Q1:45.5,Q2:54.5,Q3:51.5,Q4:75,Q5:42.4,overall:50.0,sample:22,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C20943',dealer:'Deepal BKK Vipawadee',Q1:47.1,Q2:47.1,Q3:58.8,Q4:40,Q5:52.9,overall:50.7,sample:22,promotors:11,passive:5,detractors:2,comments:{poor:[],good:[],neutral:[]}},
+      {code:'C19554',dealer:'Deepal Galax Suwinthawong',Q1:50,Q2:43.8,Q3:56.3,Q4:44.4,Q5:33.3,overall:45.8,sample:22,promotors:11,passive:5,detractors:2,comments:{
+    poor:[
+      {q:'Q1-1',text:'ไม่มีการโทรติดตามและแนะนำเชิงรุก'},
+      {q:'Q3-1',text:'มีการแจ้งขั้นตอนการซ่อมบำรุง'},
+      {q:'Q4-1',text:'ซ่อมไม่เสร็จ / ส่งอะไหล่ผิด'},
+      {q:'Q4-2',text:'ระยะเวลาการรออะไหล่นาน / การประสานงานด้านอะไหล่ไม่ตรงกัน'},
+      {q:'Q5-1',text:'ช่างยังมีความเป็นมืออาชีพ ดูแลรถได้ดี'},
+    ],
+    good:[
+      {q:'Q1-2',text:'เต็มใจบริการ มีทัศนคติเชิงบวก ยิ้มแย้ม'},
+      {q:'Q2-1',text:'แต่งกายชุดเครื่องแบบแบบพนักงานสุภาพเรียบร้อย'},
+      {q:'Q3-2',text:'อาหารและเครื่องดื่มในห้องรับรอง'},
+      {q:'Q5-2',text:'ความสะอาดเรียบร้อยของศูนย์บริการ'},
+    ],
+    neutral:[]
+  }}
+    ]};
+
+  S.dos=[
+    {log_id:'LOG-001',visit_date:new Date('2026-05-29'),dealer:'Deepal Grand Auto Hatyai',dealer_code:'C20941',region:'Southern',brand:'Deepal',visit_type:'Routine Visit',auditor:'Ektanat R.',p1_score:180,p1_max:275,p1_pct:65,p2_score:238,p2_max:340,p2_pct:70,p3_score:203,p3_max:290,p3_pct:70,p4_score:63,p4_max:95,p4_pct:66,total_score:684,total_max:1000,overall_pct:68,status:'Warn',notes:'ต้อง improve Parts room & Technician L2'},
+    {log_id:'LOG-002',visit_date:new Date('2026-05-28'),dealer:'Deepal Galax Rayong',dealer_code:'C19557',region:'Eastern',brand:'Deepal',visit_type:'Routine Visit',auditor:'Sarunpat S.',p1_score:193,p1_max:275,p1_pct:70,p2_score:255,p2_max:340,p2_pct:75,p3_score:217,p3_max:290,p3_pct:75,p4_score:71,p4_max:95,p4_pct:75,total_score:736,total_max:1000,overall_pct:74,status:'Warn',notes:'Close to pass'},
+    {log_id:'LOG-003',visit_date:new Date('2026-05-27'),dealer:'Deepal Galax Suwinthawong',dealer_code:'C19554',region:'BKK',brand:'Deepal',visit_type:'Monthly Audit',auditor:'Ektanat R.',p1_score:206,p1_max:275,p1_pct:75,p2_score:272,p2_max:340,p2_pct:80,p3_score:232,p3_max:290,p3_pct:80,p4_score:76,p4_max:95,p4_pct:80,total_score:786,total_max:1000,overall_pct:79,status:'Pass',notes:'Good overall'},
+    {log_id:'LOG-004',visit_date:new Date('2026-05-26'),dealer:'Deepal Ch.Erawan Salaya',dealer_code:'C19555',region:'West',brand:'Deepal',visit_type:'Follow-up',auditor:'Sarach R.',p1_score:165,p1_max:275,p1_pct:60,p2_score:204,p2_max:340,p2_pct:60,p3_score:174,p3_max:290,p3_pct:60,p4_score:47,p4_max:95,p4_pct:50,total_score:590,total_max:1000,overall_pct:59,status:'Fail',notes:'Technical L2 ยังไม่ผ่าน'},
+    {log_id:'LOG-005',visit_date:new Date('2026-05-25'),dealer:'Deepal Galax Rama 2',dealer_code:'C19553',region:'BKK',brand:'Deepal',visit_type:'Routine Visit',auditor:'Ektanat R.',p1_score:220,p1_max:275,p1_pct:80,p2_score:272,p2_max:340,p2_pct:80,p3_score:247,p3_max:290,p3_pct:85,p4_score:80,p4_max:95,p4_pct:84,total_score:819,total_max:1000,overall_pct:82,status:'Pass',notes:'Good performance'},
+  ];
+
+  S.training={fname:'DEMO_Training.xlsx',l1_trained:64,l1_cert:64,l2_trained:29,l2_cert:24,l1_pct:100,l2_pct:83,
+    dealers:[
+      {code:'C19554',dealer:'Deepal Galax Suwinthawong',tech_count:3,l1_trained:2,l1_cert:2,l2_trained:1,l2_cert:1,total_cert:3,l1_pct:100,l2_pct:100,s05_trained:2,s05_reg:2,hunter_trained:1,hunter_reg:1,avatr_trained:0,avatr_reg:0},
+      {code:'C19555',dealer:'Deepal Ch.Erawan Salaya',tech_count:4,l1_trained:4,l1_cert:4,l2_trained:2,l2_cert:1,total_cert:5,l1_pct:100,l2_pct:50,s05_trained:0,s05_reg:1,hunter_trained:0,hunter_reg:0,avatr_trained:0,avatr_reg:0},
+      {code:'C19553',dealer:'Deepal Galax Rama 2',tech_count:4,l1_trained:3,l1_cert:3,l2_trained:2,l2_cert:2,total_cert:5,l1_pct:100,l2_pct:100,s05_trained:1,s05_reg:1,hunter_trained:1,hunter_reg:1,avatr_trained:0,avatr_reg:0},
+      {code:'C19557',dealer:'Deepal Galax Rayong',tech_count:2,l1_trained:2,l1_cert:2,l2_trained:1,l2_cert:0,total_cert:2,l1_pct:100,l2_pct:0,s05_trained:0,s05_reg:1,hunter_trained:0,hunter_reg:0,avatr_trained:0,avatr_reg:0},
+      {code:'C20941',dealer:'Deepal Grand Auto Hatyai',tech_count:3,l1_trained:3,l1_cert:3,l2_trained:2,l2_cert:1,total_cert:4,l1_pct:100,l2_pct:50,s05_trained:1,s05_reg:1,hunter_trained:1,hunter_reg:1,avatr_trained:0,avatr_reg:0},
+    ]};
+
+  S.ats['2026-05']=[
+    ...Array(12).fill(0).map((_,i)=>({dealer:'Deepal One Chonburi',model:'S05',status:i<9?'处理中':'已完成',vin:`VIN-CHB-${i}`,month:'2026-05',is_repeat:i<2,issue:'คุณภาพผลิตภัณฑ์',reason:i<2?'多次':'—'})),
+    ...Array(8).fill(0).map((_,i)=>({dealer:'Deepal Galax Rayong',model:'E07',status:i<5?'处理中':'已完成',vin:`VIN-RYG-${i}`,month:'2026-05',is_repeat:i<1,issue:'คุณภาพผลิตภัณฑ์',reason:'—'})),
+    ...Array(6).fill(0).map((_,i)=>({dealer:'Deepal Grand Auto Hatyai',model:'S07',status:i<4?'处理中':'已完成',vin:`VIN-HTY-${i}`,month:'2026-05',is_repeat:i<2,issue:'คุณภาพผลิตภัณฑ์',reason:i<2?'多次':'—'})),
+    ...Array(5).fill(0).map((_,i)=>({dealer:'Deepal Ch.Erawan Salaya',model:'S05',status:i<3?'处理中':'已完成',vin:`VIN-SLY-${i}`,month:'2026-05',is_repeat:false,issue:'อื่นๆ',reason:'—'})),
+  ];
+
+  ['dos','csi','training','ats'].forEach(t=>markSlot(t,'DEMO_'+t.toUpperCase()+'.xlsx'));
+  document.getElementById('last-update').textContent='🟢 Demo: '+new Date().toLocaleTimeString('th-TH');
+  document.getElementById('pchip').textContent='Jan–Apr 2026';
+  renderAll();
+}
+
+window.onload=()=>loadDemo();
+</script>
+</body>
+</html>
